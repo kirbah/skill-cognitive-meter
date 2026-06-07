@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>SKILL-COGNITIVE-METER | Cognitive Analysis Report</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&amp;family=Space+Grotesk:wght@300;400;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --critical: #FF0055;
+            --high: #FF8800;
+            --moderate: #FFCC00;
+            --low: #00FF88;
+        }
+
+        body {
+            background-color: #10131a;
+            color: #e1e2eb;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+
+        .glow-sm {
+            text-shadow: 0 0 10px rgba(0, 219, 233, 0.4);
+        }
+
+        .cell-critical {
+            color: #FF0055;
+            background-color: rgba(255, 0, 85, 0.25);
+            border: 1px solid rgba(255, 0, 85, 0.6);
+            box-shadow: inset 0 0 10px rgba(255, 0, 85, 0.2);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .cell-high {
+            color: #FF8800;
+            background-color: rgba(255, 136, 0, 0.25);
+            border: 1px solid rgba(255, 136, 0, 0.6);
+            box-shadow: inset 0 0 10px rgba(255, 136, 0, 0.2);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .cell-moderate {
+            color: #FFCC00;
+            background-color: rgba(255, 204, 0, 0.25);
+            border: 1px solid rgba(255, 204, 0, 0.6);
+            box-shadow: inset 0 0 10px rgba(255, 204, 0, 0.2);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .cell-low {
+            color: #00FF88;
+            background-color: rgba(0, 255, 136, 0.25);
+            border: 1px solid rgba(0, 255, 136, 0.6);
+            box-shadow: inset 0 0 10px rgba(0, 255, 136, 0.2);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .cell-hover:hover {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.18));
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.35), inset 0 0 10px rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.85) !important;
+            z-index: 10;
+            transform: scale(1.06);
+        }
+
+        .scan-line {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(0, 219, 233, 0.2), transparent);
+            position: absolute;
+            animation: scan 4s linear infinite;
+        }
+
+        @keyframes scan {
+            0% {
+                top: 0;
+            }
+
+            100% {
+                top: 100%;
+            }
+        }
+
+        .stagger-load>* {
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeInUp 0.4s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(132, 148, 149, 0.3);
+            border-radius: 2px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 219, 233, 0.5);
+        }
+
+        /* Markdown Narrative Styling */
+        #narrative-markdown-content h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: #dbfcff;
+            margin-top: 16px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(132, 148, 149, 0.2);
+            padding-bottom: 4px;
+        }
+
+        #narrative-markdown-content h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 17px;
+            font-weight: 600;
+            color: #dbfcff;
+            margin-top: 20px;
+            margin-bottom: 8px;
+        }
+
+        #narrative-markdown-content p {
+            margin-bottom: 12px;
+            line-height: 1.6;
+            color: #b9cacb;
+            font-size: 15px;
+        }
+
+        #narrative-markdown-content ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin-bottom: 16px;
+        }
+
+        #narrative-markdown-content li {
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        /* Top-level list item (e.g. Output Contract) */
+        #narrative-markdown-content>ul>li {
+            border-left: 2px solid rgba(59, 73, 75, 0.5);
+            /* border-outline-variant/30 */
+            padding-left: 16px;
+            margin-bottom: 24px;
+        }
+
+        #narrative-markdown-content>ul>li>strong {
+            font-size: 17px;
+            display: block;
+            margin-bottom: 10px;
+            color: #dbfcff;
+            /* primary */
+        }
+
+        /* Nested list */
+        #narrative-markdown-content>ul>li>ul {
+            padding-left: 0;
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        #narrative-markdown-content>ul>li>ul>li {
+            background-color: rgba(11, 14, 20, 0.5);
+            /* bg-surface-container-lowest/50 */
+            padding: 12px 16px;
+            border-radius: 4px;
+            border: 1px solid rgba(59, 73, 75, 0.2);
+            /* border-outline-variant/10 */
+            font-size: 15px;
+            /* Scaled up for readability */
+            color: #e1e2eb;
+            line-height: 1.6;
+        }
+
+        #narrative-markdown-content>ul>li>ul>li::before {
+            content: none;
+            /* remove default dot */
+        }
+
+        /* Score Badge Classes */
+        .score-badge-CRITICAL {
+            color: #FF0055;
+            background-color: rgba(255, 0, 85, 0.1);
+            border-color: rgba(255, 0, 85, 0.3);
+        }
+
+        .score-badge-HIGH {
+            color: #FF8800;
+            background-color: rgba(255, 136, 0, 0.1);
+            border-color: rgba(255, 136, 0, 0.3);
+        }
+
+        .score-badge-MODERATE {
+            color: #FFCC00;
+            background-color: rgba(255, 204, 0, 0.1);
+            border-color: rgba(255, 204, 0, 0.3);
+        }
+
+        .score-badge-LOW {
+            color: #00FF88;
+            background-color: rgba(0, 255, 136, 0.1);
+            border-color: rgba(0, 255, 136, 0.3);
+        }
+
+        /* Diagonal Data Cascade Animation */
+        @keyframes cascade-enter {
+            0% {
+                opacity: 0;
+                transform: scale(0.3) translateY(10px);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.1) translateY(-2px);
+                box-shadow: 0 0 15px currentColor;
+                /* Uses the text color of the cell to glow */
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .animate-cascade-cell {
+            opacity: 0;
+            /* Hide initially */
+            animation: cascade-enter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .animate-fade-in-label {
+            opacity: 0;
+            animation: fadeInUp 0.4s ease forwards;
+        }
+    </style>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#3b2f00",
+                        "surface-container-highest": "#32353c",
+                        "primary-fixed": "#7df4ff",
+                        "on-primary-fixed": "#002022",
+                        "on-error-container": "#ffdad6",
+                        "error-container": "#93000a",
+                        "inverse-primary": "#006970",
+                        "surface-container-lowest": "#0b0e14",
+                        "primary-container": "#00f0ff",
+                        "on-primary": "#00363a",
+                        "outline": "#849495",
+                        "surface": "#10131a",
+                        "on-primary-container": "#006970",
+                        "surface-container-high": "#272a31",
+                        "tertiary-container": "#fed639",
+                        "on-secondary-container": "#ddcdff",
+                        "inverse-surface": "#e1e2eb",
+                        "on-secondary-fixed-variant": "#5700c9",
+                        "on-primary-fixed-variant": "#004f54",
+                        "inverse-on-surface": "#2e3037",
+                        "secondary-container": "#7000ff",
+                        "primary-fixed-dim": "#00dbe9",
+                        "on-surface-variant": "#b9cacb",
+                        "on-tertiary-container": "#715d00",
+                        "secondary-fixed-dim": "#d1bcff",
+                        "surface-container": "#1d2026",
+                        "error": "#ffb4ab",
+                        "surface-tint": "#00dbe9",
+                        "on-tertiary-fixed-variant": "#554500",
+                        "background": "#10131a",
+                        "on-tertiary-fixed": "#231b00",
+                        "surface-container-low": "#191c22",
+                        "tertiary": "#fff5de",
+                        "on-secondary": "#3c0090",
+                        "on-secondary-fixed": "#23005b",
+                        "tertiary-fixed-dim": "#eac324",
+                        "outline-variant": "#3b494b",
+                        "on-background": "#e1e2eb",
+                        "surface-variant": "#32353c",
+                        "primary": "#dbfcff",
+                        "on-surface": "#e1e2eb",
+                        "surface-dim": "#10131a",
+                        "secondary-fixed": "#e9ddff",
+                        "on-error": "#690005",
+                        "secondary": "#d1bcff",
+                        "tertiary-fixed": "#ffe179",
+                        "surface-bright": "#363940"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "lg": "24px",
+                        "base": "4px",
+                        "margin": "24px",
+                        "xl": "40px",
+                        "gutter": "16px",
+                        "md": "16px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "data-mono": ["JetBrains Mono"],
+                        "headline-md": ["Space Grotesk"],
+                        "label-caps": ["JetBrains Mono"],
+                        "body-lg": ["Geist"],
+                        "display-lg": ["Space Grotesk"],
+                        "headline-lg": ["Space Grotesk"],
+                        "body-md": ["Geist"]
+                    },
+                    "fontSize": {
+                        "data-mono": ["14px", { "lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+
+<body
+    class="font-body-md text-body-md overflow-hidden h-screen flex flex-col bg-background animate-in fade-in duration-500">
+    <div class="flex h-full">
+        <!-- Main Canvas -->
+        <main class="flex-1 p-lg overflow-y-auto">
+            <!-- Hero Section -->
+            <section
+                class="mb-xl flex flex-col md:flex-row justify-between items-start md:items-end gap-lg border-b border-outline-variant/20 pb-lg relative">
+                <div class="scan-line opacity-20"></div>
+                <div>
+                    <span
+                        class="font-label-caps text-label-caps text-primary uppercase tracking-[0.2em] mb-xs block">Technical
+                        Skill Analysis</span>
+                    <h1 class="font-display-lg text-display-lg text-primary tracking-tight" id="run-title">last30days
+                    </h1>
+                    <p class="font-data-mono text-data-mono text-on-surface-variant max-w-xl mt-sm" id="run-subtitle">
+                        Cognitive complexity
+                        mapping of the production execution stream. Monitoring rule friction and directive strictness
+                        patterns across 24 analytical nodes.</p>
+                </div>
+                <div class="bg-surface-container p-lg border border-outline-variant/30 flex flex-col items-center min-w-[200px] relative overflow-hidden"
+                    id="cognitive-badge">
+                    <div class="absolute inset-0 bg-error/5 animate-pulse" id="cognitive-pulse"></div>
+                    <span class="font-label-caps text-label-caps text-on-surface-variant mb-sm">COGNITIVE LOAD</span>
+                    <div class="text-[64px] font-bold leading-none text-error drop-shadow-[0_0_15px_rgba(255,180,171,0.5)]"
+                        id="cognitive-rating">
+                        HIGH</div>
+                    <div class="flex gap-xs mt-sm w-full" id="cognitive-bars">
+                        <div class="h-1 flex-1 bg-error"></div>
+                        <div class="h-1 flex-1 bg-error"></div>
+                        <div class="h-1 flex-1 bg-error"></div>
+                        <div class="h-1 flex-1 bg-outline-variant"></div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-lg h-[calc(100vh-240px)]">
+                <!-- Left Section: Heatmap & Tabs Selector -->
+                <div class="lg:col-span-7 flex flex-col h-full stagger-load">
+                    <div class="flex-1 min-h-0 flex flex-col">
+                        <div class="flex items-center justify-between mb-sm shrink-0">
+                            <h2 class="font-headline-md text-headline-md text-primary">Skill Cognitive Heatmap</h2>
+                            <div class="flex gap-md">
+                                <div class="flex items-center gap-xs">
+                                    <div class="w-3 h-3 cell-critical rounded-full"></div><span
+                                        class="font-label-caps text-xs text-on-surface-variant">CRITICAL</span>
+                                </div>
+                                <div class="flex items-center gap-xs">
+                                    <div class="w-3 h-3 cell-high rounded-full"></div><span
+                                        class="font-label-caps text-xs text-on-surface-variant">HIGH</span>
+                                </div>
+                                <div class="flex items-center gap-xs">
+                                    <div class="w-3 h-3 cell-moderate rounded-full"></div><span
+                                        class="font-label-caps text-xs text-on-surface-variant">MODERATE</span>
+                                </div>
+                                <div class="flex items-center gap-xs">
+                                    <div class="w-3 h-3 cell-low rounded-full"></div><span
+                                        class="font-label-caps text-xs text-on-surface-variant">LOW</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Horizontal Tabs Selector -->
+                        <div class="flex gap-sm overflow-x-auto pb-sm mb-md custom-scrollbar shrink-0" id="runs-list">
+                            <!-- Run tabs will dynamically load here -->
+                        </div>
+
+                        <div class="flex-1 overflow-y-auto custom-scrollbar space-y-base bg-surface-container-low/50 p-sm border border-outline-variant/10 rounded-lg min-h-0"
+                            id="heatmap-grid-container">
+                            <!-- Heatmap rows will load dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Section: Side Info Panel -->
+                <div class="lg:col-span-5 h-full flex flex-col">
+                    <div class="bg-surface-container-high/50 backdrop-blur-md border border-primary/20 p-lg rounded-lg h-full flex flex-col relative transition-all duration-300"
+                        id="details-panel">
+                        <div id="default-panel-header" class="flex items-center gap-sm mb-lg shrink-0">
+                            <span class="material-symbols-outlined text-primary">psychology_alt</span>
+                            <h3 class="font-headline-md text-headline-md text-primary">Where the Cognitive Load Spikes
+                            </h3>
+                        </div>
+                        <div class="flex-1 overflow-y-auto pr-sm custom-scrollbar min-h-0" id="default-panel-content">
+                            <div id="narrative-markdown-content" class="space-y-lg">
+                                <!-- Narrative Markdown will render here -->
+                            </div>
+                        </div>
+
+                        <!-- Active Hover Details Panel -->
+                        <div class="hidden flex-col h-full animate-in fade-in slide-in-from-right-4 duration-300 absolute inset-0 bg-surface-container-high p-lg rounded-lg overflow-y-auto custom-scrollbar"
+                            id="active-panel-content">
+                            <!-- Top Right Close Button -->
+                            <button
+                                class="absolute top-md right-md text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center p-sm rounded-full hover:bg-surface-container-highest"
+                                onclick="resetDetails()" title="Return to Overview">
+                                <span class="material-symbols-outlined text-lg">close</span>
+                            </button>
+
+                            <div class="mb-lg">
+                                <span class="font-label-caps text-xs text-on-surface-variant block mb-xs">METRIC
+                                    CATEGORY</span>
+                                <div class="font-headline-md text-headline-md text-primary uppercase" id="metric-title">
+                                    Dependency Depth</div>
+                            </div>
+                            <div class="mb-lg">
+                                <span class="font-label-caps text-xs text-on-surface-variant block mb-xs">SCORE /
+                                    STATUS</span>
+                                <div class="inline-block px-md py-xs rounded-sm text-[13px] font-bold tracking-widest border"
+                                    id="metric-status">CRITICAL</div>
+                            </div>
+                            <div class="mb-lg">
+                                <span class="font-label-caps text-xs text-on-surface-variant block mb-xs">RISK
+                                    DESCRIPTION</span>
+                                <p class="text-body-md text-on-surface-variant leading-relaxed font-semibold text-[15px]"
+                                    id="metric-desc">
+                                    Primary execution stream has exceeded the safe complexity threshold. Rule friction
+                                    is causing significant cognitive overhead for the processor.
+                                </p>
+                            </div>
+                            <div class="mb-lg">
+                                <span class="font-label-caps text-xs text-on-surface-variant block mb-md">IDENTIFIED
+                                    TRIGGERS</span>
+                                <div class="flex flex-wrap gap-sm" id="metric-triggers">
+                                    <!-- Dynamic Tech Tags -->
+                                </div>
+                            </div>
+                            <div class="pt-lg border-t border-outline-variant/30 mt-auto">
+                                <button
+                                    class="w-full py-md border border-primary/40 text-primary font-label-caps text-[12px] hover:bg-primary/10 transition-colors flex items-center justify-center gap-sm"
+                                    onclick="resetDetails()">
+                                    <span class="material-symbols-outlined text-[14px]">arrow_back</span> RETURN TO
+                                    OVERVIEW
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Runs data injected by Python script -->
+    <script id="runs-data">
+        const runs = [
+    {
+        "skill_name": "office-hours",
+        "created_at": "2026-06-07 17:34:46",
+        "overall_cognitive_rating": "CRITICAL",
+        "heatmap_data": [
+            {
+                "section": "Preamble (run first) & Artifacts Sync",
+                "metrics": [
+                    {
+                        "category": "context_burden",
+                        "score": "MODERATE",
+                        "risk": "The preamble heavily modifies the environment using Bash scripts, requiring the model to observe and track multiple dynamically generated configuration variables (e.g., _GBRAIN_MCP_MODE, PROACTIVE_PROMPTED) that subtly alter subsequent required behaviors over a long context window.",
+                        "triggers": [
+                            "ARTIFACTS_SYNC",
+                            "GBRAIN_MCP_MODE"
+                        ]
+                    }
+                ]
+            },
+            {
+                "section": "AskUserQuestion Format",
+                "metrics": [
+                    {
+                        "category": "directive_strictness",
+                        "score": "CRITICAL",
+                        "risk": "The formatting constraints are heavily micromanaged. The model must track string lengths (>40 chars), inject specific emojis, categorize completeness via artificial metrics, and split N>4 options into complex nested subset chains (D<N>.k). This places massive strain on structural formatting adherence during long text generation.",
+                        "triggers": [
+                            "D<N>",
+                            "ELI10",
+                            "✅",
+                            "❌",
+                            "40 chars"
+                        ]
+                    },
+                    {
+                        "category": "rule_friction",
+                        "score": "MODERATE",
+                        "risk": "The instruction to write non-ASCII strings literally without unicode escaping (for CJK support) counters the default fallback tokenization mechanisms of many AI systems, potentially leading to token stream corruption.",
+                        "triggers": [
+                            "Non-ASCII characters",
+                            "never \\u-escape"
+                        ]
+                    }
+                ]
+            },
+            {
+                "section": "Skill Invocation During Plan Mode",
+                "metrics": [
+                    {
+                        "category": "rule_friction",
+                        "score": "HIGH",
+                        "risk": "The model is instructed to override its core system constraints regarding plan mode, treating the skill file as executable instructions rather than a reference. This essentially hijacks standard state machine rules and risks confusing standard plan-mode verification gates.",
+                        "triggers": [
+                            "PLAN MODE EXCEPTION",
+                            "Treat the skill file as executable instructions"
+                        ]
+                    }
+                ]
+            },
+            {
+                "section": "Phase 2A: Startup Mode & Phase 2B: Builder Mode",
+                "metrics": [
+                    {
+                        "category": "control_flow",
+                        "score": "CRITICAL",
+                        "risk": "The workflow is highly non-linear across conversational turns. The model must ask questions strictly one at a time, implement dynamic condition checks to skip questions, handle user impatience as 'escape hatches', and execute 'vibe shifts' to cross over from Builder to Startup mode. Managing this state across a long dialog tree risks derailment or skipped steps.",
+                        "triggers": [
+                            "ONE AT A TIME",
+                            "Smart-skip",
+                            "Escape hatch",
+                            "vibe shifts"
+                        ]
+                    },
+                    {
+                        "category": "rule_friction",
+                        "score": "HIGH",
+                        "risk": "The model is strictly prohibited from using conversational filler, validation, or encouragement (e.g., 'That's interesting'). This directly conflicts with the foundational helpfulness bias in standard RLHF profiles, forcing the model to expend cognitive effort suppressing its default conversational behavior.",
+                        "triggers": [
+                            "Anti-Sycophancy Rules",
+                            "Never say these",
+                            "confrontational"
+                        ]
+                    }
+                ]
+            },
+            {
+                "section": "Phase 3.5: Cross-Model Second Opinion (optional)",
+                "metrics": [
+                    {
+                        "category": "tool_orchestration",
+                        "score": "CRITICAL",
+                        "risk": "This section demands multi-stage, branching tool execution: writing a dynamic string to a temp file, executing an external agent (Codex) against that file, piping output to another temp file, reading stderr, and parsing error states to trigger sub-agent fallbacks. This high-density orchestration poses a massive risk of syntax errors, bash injection flaws, or tool hallucination.",
+                        "triggers": [
+                            "mktemp",
+                            "codex exec",
+                            "2>\"$TMPERR_OH\"",
+                            "Agent tool"
+                        ]
+                    }
+                ]
+            },
+            {
+                "section": "Phase 4: Alternatives Generation (MANDATORY)",
+                "metrics": [
+                    {
+                        "category": "control_flow",
+                        "score": "HIGH",
+                        "risk": "This section imposes a hard 'STOP' gate, explicitly forbidding the model from moving to the synthesis or document generation phases until user input is received. There is a high risk the model may ignore the stop gate in its eagerness to complete the task and auto-generate the remainder of the document in a single burst.",
+                        "triggers": [
+                            "STOP",
+                            "Do NOT proceed",
+                            "MANDATORY"
+                        ]
+                    }
+                ]
+            },
+            {
+                "section": "Visual Design Exploration / Visual Sketch",
+                "metrics": [
+                    {
+                        "category": "tool_orchestration",
+                        "score": "HIGH",
+                        "risk": "The model must orchestrate design binary generation, manage daemon processes or HTML captures, and potentially parse JSON feedback arrays to iteratively rewrite UI layouts. Tracking local file paths while waiting for user visual approval splits focus significantly and risks breaking the primary conversational flow.",
+                        "triggers": [
+                            "$D variants",
+                            "$D compare",
+                            "$B screenshot",
+                            "regenerated"
+                        ]
+                    }
+                ]
+            },
+            {
+                "section": "Section index — Read each section when its situation applies",
+                "metrics": [
+                    {
+                        "category": "dependency_depth",
+                        "score": "CRITICAL",
+                        "risk": "This enforces a highly delayed execution dependency. The model is told at the start of the prompt to read an external markdown file (`sections/design-and-handoff.md`) ONLY after it completes conversations and reaches Phase 5. After a multi-turn conversation spanning multiple tool calls, this specific file-read instruction is very likely to fall out of active attention.",
+                        "triggers": [
+                            "writing the design doc",
+                            "sections/design-and-handoff.md",
+                            "Read each section"
+                        ]
+                    }
+                ]
+            }
+        ],
+        "narrative_md": "## Where the Cognitive Load Spikes (Strict or Unclear Rules)\n\n* **AskUserQuestion Format**\n  * **directive_strictness (CRITICAL):** The model is forced to adhere to an extremely strict taxonomy for questions, including dynamic identifiers (`D<N>`), rigid paragraph structures (ELI10, Stakes), completeness scoring rules, and constraints on bullet styles (✅/❌) with >40 character minimums. It must also handle complex option-splitting logic if options exceed 4 items, heavily taxing its token-prediction alignment and increasing the risk of structural failure.\n  \n* **Section index — Read each section when its situation applies**\n  * **dependency_depth (CRITICAL):** The model is instructed early on to read an external markdown file (`sections/design-and-handoff.md`) *only* when it reaches Phases 5 and 6 later in the workflow. This creates a massive long-distance context dependency; the model is highly likely to forget this instruction by the time it reaches Phase 5 after a multi-turn conversation, risking hallucinated document layouts.\n\n* **Phase 2A: Startup Mode / Phase 2B: Builder Mode**\n  * **control_flow (CRITICAL):** The skill requires a highly rigid sequential dialog flow (Ask ONE AT A TIME, wait for response) mixed with dynamic escape hatches (smart-skips, vibe shifts). Managing multi-turn state while remembering which phase it is currently in strains the model's ability to track conversational checkpoints over time.\n  * **rule_friction (HIGH):** The \"Anti-Sycophancy Rules\" explicitly forbid natural conversational affirmations (e.g., \"That's an interesting approach\" or \"I can see why you'd think that\"). This directly conflicts with default AI conversational conditioning, forcing the model to suppress its heavily reinforced helpfulness bias in favor of confrontational rigor.\n\n* **Phase 3.5: Cross-Model Second Opinion (optional)**\n  * **tool_orchestration (CRITICAL):** The orchestration required here is unusually intense. It requires the model to aggregate prior session history, dynamically assemble a nested instruction prompt, write it to a temp file, execute an external CLI agent (`codex exec`), read `stderr` for outputs or timeout errors, and gracefully fall back to a native subagent on failure—all while maintaining the core session context.\n\n* **Visual Design Exploration**\n  * **tool_orchestration (HIGH):** The model must evaluate CLI environment variables to determine if a design binary is available, dynamically generate a design brief, spawn a local daemon process, and potentially poll or intercept JSON payloads to iteratively refine visual layouts mid-conversation."
+    },
+    {
+        "skill_name": "last30days",
+        "created_at": "2026-06-07 17:27:25",
+        "overall_cognitive_rating": "CRITICAL",
+        "heatmap_data": [
+            {
+                "section": "STEP 0: STALE-CLONE SELF-CHECK",
+                "metrics": [
+                    {
+                        "category": "control_flow",
+                        "score": "HIGH",
+                        "risk": "The model is asked to run a diagnostic Bash script before processing the rest of the prompt to detect a stale clone, and conditionally abort to read a different file if paths match. This requires the model to pause reasoning, execute code, and potentially alter its entire context source based on the output, which breaks standard linear prompt execution.",
+                        "triggers": [
+                            "STALE-CLONE SELF-CHECK",
+                            "STOP and re-read"
+                        ]
+                    }
+                ]
+            },
+            {
+                "section": "OUTPUT CONTRACT (BADGE + LAWS)",
+                "metrics": [
+                    {
+                        "category": "rule_friction",
+                        "score": "CRITICAL",
+                        "risk": "LAW 1 directly overrides the mandatory 'Sources:' section required by the WebSearch tool's system prompt. Because the WebSearch mandate is reinforced globally at the tool level, the model experiences extreme attention-head strain suppressing it, frequently leading to rule violation as the model tries to satisfy conflicting foundational instructions.",
+                        "triggers": [
+                            "LAW 1",
+                            "MANDATORY Sources section",
+                            "SUPERSEDED"
+                        ]
+                    },
+                    {
+                        "category": "directive_strictness",
+                        "score": "HIGH",
+                        "risk": "LAW 3 (no em-dashes) and LAW 4 (no `##` headers) force the model to abandon its deeply ingrained stylistic defaults for synthesis. The model must expend significant cognitive load actively filtering common formatting tokens, increasing the chance of structural breakdown elsewhere.",
+                        "triggers": [
+                            "NO EM-DASHES",
+                            "NO ## or ### SECTION HEADERS"
+                        ]
+                    }
+                ]
+            },
+            {
+                "section": "Step 0.45: Query Quality Pre-Flight",
+                "metrics": [
+                    {
+                        "category": "control_flow",
+                        "score": "MODERATE",
+                        "risk": "The model must cross-reference the user's topic against 4 specific keyword-trap classes before proceeding. If a match is found, it must halt execution to ask a clarifying question or unilaterally reframe the query, which introduces a complex conditional loop early in the skill.",
+                        "triggers": [
+                            "Demographic shopping query",
+                            "Numeric / age keyword trap",
+                            "Ask ONE clarifying question upfront"
+                        ]
+                    }
+                ]
+            },
+            {
+                "section": "Step 0.5: Pre-Flight Resolution",
+                "metrics": [
+                    {
+                        "category": "dependency_depth",
+                        "score": "CRITICAL",
+                        "risk": "The model must harvest precise strings (X handles, GitHub usernames, Repos) and carry them in memory across multiple subsequent steps (Step 0.55, Step 0.75) before injecting them into the Step 1 Bash command. As the context window fills with intermediate WebSearch results, these variables risk being truncated, forgotten, or hallucinated at execution time.",
+                        "triggers": [
+                            "RESOLVED_HANDLE",
+                            "RESOLVED_GITHUB_USER",
+                            "Pass to the CLI"
+                        ]
+                    }
+                ]
+            },
+            {
+                "section": "If QUERY_TYPE = COMPARISON",
+                "metrics": [
+                    {
+                        "category": "context_burden",
+                        "score": "CRITICAL",
+                        "risk": "Comparison queries require the model to fan out its resolution phase across multiple entities, managing parallel arrays of handles, subreddits, and contexts. Keeping the state of Topic A separate from Topic B and formatting them accurately into a strict multi-layered JSON heredoc pushes the model's associative tracking to its absolute limits.",
+                        "triggers": [
+                            "--competitors-plan",
+                            "MANDATORY per-entity resolution",
+                            "COMPETITORS_PLAN_FILE"
+                        ]
+                    }
+                ]
+            },
+            {
+                "section": "Step 0.75: Generate Query Plan",
+                "metrics": [
+                    {
+                        "category": "tool_orchestration",
+                        "score": "HIGH",
+                        "risk": "The model must independently generate a strict JSON schema and use bash heredoc syntax to write it to a temporary system file before triggering the engine. Managing shell escapes, apostrophe hazards, and tmpfile lifecycles simultaneously is highly error-prone.",
+                        "triggers": [
+                            "QUERY_PLAN_JSON",
+                            "mktemp",
+                            "cat >"
+                        ]
+                    }
+                ]
+            },
+            {
+                "section": "Step 1: Run the research script",
+                "metrics": [
+                    {
+                        "category": "prompt_density",
+                        "score": "HIGH",
+                        "risk": "The instructions for constructing the Bash command are incredibly dense, requiring the model to parse environmental variables, conditional flags, and path resolutions all at once. The heavy boilerplate obscures the actual runtime logic.",
+                        "triggers": [
+                            "SKILL_DIR",
+                            "LAST30DAYS_PYTHON",
+                            "ARGUMENTS"
+                        ]
+                    }
+                ]
+            },
+            {
+                "section": "Step 2.5: Append WebSearch Results to Saved Raw File",
+                "metrics": [
+                    {
+                        "category": "tool_orchestration",
+                        "score": "MODERATE",
+                        "risk": "The model must dynamically read engine logs to discover an absolute file path, open that specific file, and accurately append bullet points using a rigid formatting structure. This multi-tool chain requires precise filesystem awareness.",
+                        "triggers": [
+                            "Append a ## WebSearch Supplemental Results section",
+                            "LAST30DAYS_MEMORY_DIR"
+                        ]
+                    }
+                ]
+            },
+            {
+                "section": "Judge Agent: Synthesize All Sources",
+                "metrics": [
+                    {
+                        "category": "directive_strictness",
+                        "score": "HIGH",
+                        "risk": "The synthesis phase enforces rigorous presentation rules, including specific Polymarket data exclusion (no dollar volumes), exact inline link styling (LAW 8), and distinct structural templates depending on whether it is a comparison or general query. The margin for stylistic error is near zero.",
+                        "triggers": [
+                            "show ONLY % odds",
+                            "NEVER mention dollar volumes",
+                            "Required comparison structure"
+                        ]
+                    }
+                ]
+            }
+        ],
+        "narrative_md": "## Where the Cognitive Load Spikes (Strict or Unclear Rules)\n\n* **OUTPUT CONTRACT (BADGE + LAWS)**\n  * **rule_friction (CRITICAL):** There is a severe structural clash in **LAW 1**. The skill explicitly forbids a trailing \"Sources:\" block, but standard tool contracts (like the WebSearch tool's system prompt) strictly mandate it. The AI model faces intense cognitive friction trying to suppress a deeply embedded system-level directive in favor of a local skill rule, risking formatting failure or logic paralysis.\n  * **directive_strictness (HIGH):** The voice contract imposes highly unnatural constraints on the model's preferred writing style. **LAW 3** forbids em-dashes and en-dashes entirely, while **LAW 4** forbids standard markdown headings (`##` and `###`). The model has to actively filter its token generation step-by-step to avoid triggering these anti-patterns.\n\n* **Step 0.5 through Step 0.55: Pre-Flight Resolution**\n  * **dependency_depth (CRITICAL):** The AI must perform multiple preliminary WebSearches to resolve variables (`RESOLVED_HANDLE`, `RESOLVED_SUBREDDITS`, `RESOLVED_GITHUB_USER`, `RESOLVED_HASHTAGS`). It must then hold these exact strings perfectly in its working memory across multiple intermediate steps (like Step 0.75 JSON planning) before finally injecting them into a complex Bash command in Step 1. In lengthy context windows, these variables are highly susceptible to being dropped or hallucinated.\n\n* **If QUERY_TYPE = COMPARISON**\n  * **context_burden (CRITICAL):** When a user asks for a comparison, the cognitive load balloons exponentially. The model must track state for N separate entities, execute full `Step 0.55` resolution for each, properly isolate the gathered handles, and generate a dynamic heredoc JSON (`--competitors-plan`) without mixing up the variables of `TOPIC_A`, `TOPIC_B`, and `TOPIC_C`. \n\n* **Step 0.75: Generate Query Plan & Step 1: Execution**\n  * **tool_orchestration (HIGH):** Instead of a simple CLI execution, the model must act as its own planner, format a complex JSON schema, write it to a temporary file via a Bash heredoc script, and dynamically attach a dozen conditional flags (`--x-handle`, `--subreddits`, etc.) depending on what was found previously. The sheer number of moving parts increases the likelihood of bash syntax errors or missing arguments."
+    },
+    {
+        "skill_name": "skill-cognitive-meter",
+        "created_at": "2026-06-07 16:58:21",
+        "overall_cognitive_rating": "MODERATE",
+        "heatmap_data": [
+            {
+                "section": "Frontmatter"
+            },
+            {
+                "section": "Skill Overview"
+            },
+            {
+                "section": "### ANALYSIS CATEGORIES"
+            },
+            {
+                "section": "### SCORE CONSTANTS"
+            },
+            {
+                "section": "### SECTIONING RULES",
+                "metrics": [
+                    {
+                        "category": "control_flow",
+                        "score": "MODERATE",
+                        "risk": "Requires dynamic section parsing matching exact document headings/laws rather than generic phases, and mandates including all sections even if they have no cognitive load risks.",
+                        "triggers": [
+                            "actual headings, step numbers, rules, or law names",
+                            "MUST evaluate every major section"
+                        ]
+                    }
+                ]
+            },
+            {
+                "section": "### OUTPUT FORMAT REQUIREMENTS",
+                "metrics": [
+                    {
+                        "category": "rule_friction",
+                        "score": "CRITICAL",
+                        "risk": "Contradiction in file formatting instructions: Bullet 1 assigns Markdown text to the .json file; Bullet 2 assigns JSON to the .md file, which contradicts standard file format expectations and the Sample Output format.",
+                        "triggers": [
+                            "complexity.json",
+                            "narrative.md",
+                            "Do not add json code blocks to this file",
+                            "Provide valid JSON containing the keys"
+                        ]
+                    },
+                    {
+                        "category": "context_burden",
+                        "score": "LOW",
+                        "risk": "Tracking the session ID variable and target directories correctly across operations.",
+                        "triggers": [
+                            "${CLAUDE_SESSION_ID}",
+                            "output/runs/${CLAUDE_SESSION_ID}/"
+                        ]
+                    }
+                ]
+            },
+            {
+                "section": "### SAMPLE OUTPUT FORMAT"
+            }
+        ],
+        "narrative_md": "## Where the Cognitive Load Spikes (Strict or Unclear Rules)\n\n* **### OUTPUT FORMAT REQUIREMENTS**\n  * **rule_friction (CRITICAL):** The instructions contain a direct contradiction in file assignments:\n    - Bullet 1 directs the model to output a Markdown section to the `.json` file (`<analyzed_skill_name>_complexity.json`).\n    - Bullet 2 directs the model to output valid JSON to the `.md` file (`<analyzed_skill_name>_narrative.md`).\n    However, the **### SAMPLE OUTPUT FORMAT** section later maps these in reverse (assigning the Markdown section to `_narrative.md` and the JSON to `_complexity.json`). This creates a critical contradiction where the model must resolve conflicting instructions and choose whether to violate standard file extension structures or ignore the explicit formatting instructions under \"OUTPUT FORMAT REQUIREMENTS\".\n  * **context_burden (MODERATE):** The model must track the variable `${CLAUDE_SESSION_ID}` throughout the output creation process and map it to the run ID, ensuring it writes to the correct directory structure (`output/runs/${CLAUDE_SESSION_ID}/`) without placing the files inside the skill directory.\n\n* **### SECTIONING RULES**\n  * **control_flow (MODERATE):** The model must dynamically segment the analysis by the exact headings and step numbers in the source file, rather than using generic phases, and must remember to include every single section in the JSON report even if no cognitive risks are identified.\n"
+    }
+];
+    </script>
+
+    <script>
+        let activeRunIndex = 0;
+
+        function scrambleText(element, targetText, duration = 400) {
+            const chars = '01X_$/\\#%&+-*[]{}';
+
+            // Cancel any existing scramble animation on this specific element
+            if (element.scrambleRequestId) {
+                cancelAnimationFrame(element.scrambleRequestId);
+            }
+
+            const start = performance.now();
+
+            function update(time) {
+                const elapsed = time - start;
+                const progress = Math.min(elapsed / duration, 1);
+
+                let result = '';
+                for (let i = 0; i < targetText.length; i++) {
+                    if (targetText[i] === ' ') {
+                        result += ' ';
+                        continue;
+                    }
+                    if (Math.random() < progress) {
+                        result += targetText[i];
+                    } else {
+                        result += chars[Math.floor(Math.random() * chars.length)];
+                    }
+                }
+
+                element.textContent = result;
+
+                if (progress < 1) {
+                    element.scrambleRequestId = requestAnimationFrame(update);
+                } else {
+                    // Clean up when done
+                    delete element.scrambleRequestId;
+                }
+            }
+
+            element.scrambleRequestId = requestAnimationFrame(update);
+        }
+
+        function updateCognitiveBadge(score) {
+            const pulseEl = document.getElementById('cognitive-pulse');
+            const ratingEl = document.getElementById('cognitive-rating');
+            const barsEl = document.getElementById('cognitive-bars');
+
+            ratingEl.textContent = score;
+
+            // Reset classes
+            ratingEl.className = 'text-[64px] font-bold leading-none transition-all duration-300';
+            pulseEl.className = 'absolute inset-0 animate-pulse transition-all duration-300';
+
+            let barsHtml = '';
+            const totalBars = 4;
+            let filledBars = 0;
+            let barColorClass = '';
+
+            if (score === 'CRITICAL') {
+                ratingEl.classList.add('text-error', 'drop-shadow-[0_0_15px_rgba(255,0,85,0.5)]');
+                pulseEl.classList.add('bg-error/5');
+                filledBars = 4;
+                barColorClass = 'bg-[#FF0055]';
+            } else if (score === 'HIGH') {
+                ratingEl.classList.add('text-[#FF8800]', 'drop-shadow-[0_0_15px_rgba(255,136,0,0.5)]');
+                pulseEl.classList.add('bg-[#FF8800]/5');
+                filledBars = 3;
+                barColorClass = 'bg-[#FF8800]';
+            } else if (score === 'MODERATE') {
+                ratingEl.classList.add('text-[#FFCC00]', 'drop-shadow-[0_0_15px_rgba(255,204,0,0.5)]');
+                pulseEl.classList.add('bg-[#FFCC00]/5');
+                filledBars = 2;
+                barColorClass = 'bg-[#FFCC00]';
+            } else { // LOW
+                ratingEl.classList.add('text-[#00FF88]', 'drop-shadow-[0_0_15px_rgba(0,255,136,0.5)]');
+                pulseEl.classList.add('bg-[#00FF88]/5');
+                filledBars = 1;
+                barColorClass = 'bg-[#00FF88]';
+            }
+
+            for (let i = 0; i < totalBars; i++) {
+                if (i < filledBars) {
+                    barsHtml += `<div class="h-1 flex-1 ${barColorClass} transition-colors duration-300"></div>`;
+                } else {
+                    barsHtml += `<div class="h-1 flex-1 bg-outline-variant transition-colors duration-300"></div>`;
+                }
+            }
+            barsEl.innerHTML = barsHtml;
+        }
+
+        function renderHeatmap(heatmapData) {
+            const container = document.getElementById('heatmap-grid-container');
+            container.innerHTML = '';
+
+            if (!heatmapData || heatmapData.length === 0) {
+                container.innerHTML = '<p class="font-data-mono text-xs text-on-surface-variant p-md text-center">No heatmap data available for this run.</p>';
+                return;
+            }
+
+            heatmapData.forEach((row, rowIndex) => {
+                const rowEl = document.createElement('div');
+                rowEl.className = 'group flex items-center gap-base h-12';
+                rowEl.style.animationDelay = `${(rowIndex + 1) * 0.05}s`;
+
+                // 2x wider (w-96) step label and larger font size (text-[12px])
+                const labelEl = document.createElement('div');
+                labelEl.className = 'w-96 shrink-0 font-data-mono text-[12px] text-on-surface-variant truncate pr-md animate-fade-in-label';
+                labelEl.title = row.section;
+                labelEl.textContent = row.section;
+
+                // Stagger the label fade-in based on the row index
+                labelEl.style.animationDelay = `${rowIndex * 0.05}s`;
+
+                rowEl.appendChild(labelEl);
+
+                const hasMetrics = row.metrics && row.metrics.length > 0;
+                if (!hasMetrics) {
+                    // CLEAN PASS row
+                    const progressBg = document.createElement('div');
+                    progressBg.className = 'flex-1 h-2 bg-primary/10 border border-primary/20 rounded-full overflow-hidden self-center';
+
+                    const progressFill = document.createElement('div');
+                    progressFill.className = 'h-full w-full bg-primary/30 animate-pulse';
+                    progressBg.appendChild(progressFill);
+                    rowEl.appendChild(progressBg);
+
+                    const passLabel = document.createElement('span');
+                    passLabel.className = 'font-label-caps text-xs text-primary px-sm';
+                    passLabel.textContent = 'CLEAN PASS';
+                    rowEl.appendChild(passLabel);
+                } else {
+                    // Grid of cells
+                    const gridEl = document.createElement('div');
+                    gridEl.className = 'flex-1 grid grid-cols-12 gap-base h-full';
+
+                    row.metrics.forEach((metric, colIndex) => {
+                        const cell = document.createElement('div');
+                        const scoreLower = metric.score.toLowerCase();
+                        cell.className = `cell-${scoreLower} cell-hover cursor-pointer animate-cascade-cell`;
+
+                        const delay = (rowIndex + colIndex) * 0.03;
+                        cell.style.animationDelay = `${delay}s`;
+
+                        cell.dataset.category = metric.category.replace(/_/g, ' ');
+                        cell.dataset.score = metric.score;
+                        cell.dataset.risk = metric.risk;
+                        cell.dataset.triggers = JSON.stringify(metric.triggers || []);
+
+                        cell.addEventListener('mouseenter', function () {
+                            // Remove highlight from all cells
+                            document.querySelectorAll('.cell-hover').forEach(c => c.style.borderColor = '');
+                            // Add aggressive highlight to current cell
+                            this.style.borderColor = '#ffffff';
+
+                            updateDetails(
+                                this.dataset.category,
+                                this.dataset.score,
+                                this.dataset.risk,
+                                JSON.parse(this.dataset.triggers)
+                            );
+                        });
+                        gridEl.appendChild(cell);
+                    });
+
+                    const usedCols = row.metrics.length;
+                    if (usedCols < 12) {
+                        const spacer = document.createElement('div');
+                        spacer.className = `col-span-${12 - usedCols} bg-surface-container-high/20 border border-outline-variant/10`;
+                        gridEl.appendChild(spacer);
+                    }
+                    rowEl.appendChild(gridEl);
+                }
+
+                container.appendChild(rowEl);
+            });
+        }
+
+        function renderRunsList() {
+            const container = document.getElementById('runs-list');
+            container.innerHTML = '';
+
+            runs.forEach((run, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'px-md py-sm rounded border border-outline-variant/10 hover:border-primary/30 hover:bg-surface-container-high/40 transition-all flex items-center gap-sm shrink-0 group';
+                btn.onclick = () => selectRun(index);
+                btn.setAttribute('id', `run-item-${index}`);
+
+                const dot = document.createElement('span');
+                dot.className = 'w-2 h-2 rounded-full shrink-0';
+
+                const score = run.overall_cognitive_rating;
+                if (score === 'CRITICAL') dot.classList.add('bg-[#FF0055]');
+                else if (score === 'HIGH') dot.classList.add('bg-[#FF8800]');
+                else if (score === 'MODERATE') dot.classList.add('bg-[#FFCC00]');
+                else dot.classList.add('bg-[#00FF88]');
+
+                const nameText = document.createElement('span');
+                nameText.className = 'font-data-mono text-[13px] text-on-surface-variant group-hover:text-primary transition-colors truncate';
+                nameText.textContent = run.skill_name;
+
+                const rightTime = document.createElement('span');
+                rightTime.className = 'font-data-mono text-[11px] text-on-surface-variant/40 group-hover:text-primary/60 transition-colors shrink-0 pl-xs';
+                rightTime.textContent = `(${run.created_at})`;
+
+                btn.appendChild(dot);
+                btn.appendChild(nameText);
+                btn.appendChild(rightTime);
+                container.appendChild(btn);
+            });
+        }
+
+        function selectRun(index) {
+            // Remove active style from old button
+            const oldBtn = document.getElementById(`run-item-${activeRunIndex}`);
+            if (oldBtn) {
+                oldBtn.classList.remove('border-primary', 'bg-surface-container-high/60');
+                oldBtn.classList.add('border-outline-variant/10');
+            }
+
+            activeRunIndex = index;
+            const run = runs[index];
+
+            // Add active style to new button
+            const newBtn = document.getElementById(`run-item-${index}`);
+            if (newBtn) {
+                newBtn.classList.add('border-primary', 'bg-surface-container-high/60');
+                newBtn.classList.remove('border-outline-variant/10');
+            }
+
+            // Update title
+            const titleEl = document.getElementById('run-title');
+            if (titleEl) {
+                scrambleText(titleEl, run.skill_name, 350);
+            }
+            document.getElementById('run-subtitle').textContent = `Cognitive complexity mapping. Analysis generated at: ${run.created_at}`;
+
+            // Update cognitive badge
+            updateCognitiveBadge(run.overall_cognitive_rating);
+
+            // Update Heatmap
+            renderHeatmap(run.heatmap_data);
+
+            // Preprocess narrative MD to convert scores to badges
+            const mdWithBadges = run.narrative_md.replace(/\*\*([^*]+)\s+\((?:Score\s+)?(CRITICAL|HIGH|MODERATE|LOW)\):\*\*/gi, (match, name, level) => {
+                const upperLevel = level.toUpperCase();
+                return `<div class="flex justify-between items-center mb-2"><span class="font-label-caps text-[12px] text-primary">${name}</span><span class="font-label-caps text-[11px] score-badge-${upperLevel} px-2 py-[2px] border rounded">${upperLevel}</span></div>`;
+            });
+
+            // Update narrative content
+            document.getElementById('narrative-markdown-content').innerHTML = marked.parse(mdWithBadges);
+
+            // Return details card to overview state
+            resetDetails();
+        }
+
+        function updateDetails(category, score, description, triggers) {
+            const activePanel = document.getElementById('active-panel-content');
+            activePanel.classList.remove('hidden');
+            activePanel.classList.add('flex');
+
+            const titleEl = document.getElementById('metric-title');
+            if (titleEl) {
+                if (titleEl.textContent.trim() !== category.trim()) {
+                    scrambleText(titleEl, category, 250);
+                }
+            }
+
+            const statusEl = document.getElementById('metric-status');
+            statusEl.textContent = score;
+            statusEl.className = 'inline-block px-md py-xs rounded-sm text-[13px] font-bold tracking-widest border';
+
+            if (score === 'CRITICAL') {
+                statusEl.classList.add('bg-error/20', 'text-error', 'border-error/50');
+            } else if (score === 'HIGH') {
+                statusEl.classList.add('bg-[#FF880022]', 'text-[#FF8800]', 'border-[#FF880088]');
+            } else if (score === 'MODERATE') {
+                statusEl.classList.add('bg-[#FFCC0022]', 'text-[#FFCC00]', 'border-[#FFCC0088]');
+            } else { // LOW
+                statusEl.classList.add('bg-[rgba(0,255,136,0.15)]', 'text-[#00FF88]', 'border-[#00FF8888]');
+            }
+
+            const descEl = document.getElementById('metric-desc');
+            if (descEl) {
+                if (descEl.textContent.trim() !== description.trim()) {
+                    scrambleText(descEl, description, 300);
+                }
+            }
+
+            const triggerContainer = document.getElementById('metric-triggers');
+            triggerContainer.innerHTML = '';
+            triggers.forEach(t => {
+                const tag = document.createElement('span');
+                tag.className = 'px-sm py-[2px] bg-surface-container-highest border border-outline-variant text-on-surface-variant font-data-mono text-[11px] rounded-xs';
+                tag.textContent = t;
+                triggerContainer.appendChild(tag);
+            });
+        }
+
+        function resetDetails() {
+            const activePanel = document.getElementById('active-panel-content');
+            activePanel.classList.remove('flex');
+            activePanel.classList.add('hidden');
+            // Remove highlight from all cells
+            document.querySelectorAll('.cell-hover').forEach(c => c.style.borderColor = '');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (typeof runs !== 'undefined' && runs.length > 0) {
+                renderRunsList();
+                selectRun(0);
+            } else {
+                document.getElementById('heatmap-grid-container').innerHTML = '<p class="font-data-mono text-xs text-on-surface-variant p-md text-center">No runs data found. Please run the build script.</p>';
+                document.getElementById('narrative-markdown-content').innerHTML = '<p class="font-data-mono text-xs text-on-surface-variant p-md text-center">No narrative data available.</p>';
+            }
+        });
+    </script>
+</body>
+
+</html>
