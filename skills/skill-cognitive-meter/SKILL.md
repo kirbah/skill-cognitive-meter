@@ -56,9 +56,9 @@ Write generated files only under this folder:
 
 Write exactly these two files:
 
-- `output/runs/${CLAUDE_SESSION_ID}/<analyzed_skill_name>_complexity.json`. Open with a section titled `## Where the Cognitive Load Spikes (Strict or Unclear Rules)`. Detail the most critical friction points, structural contradictions, and variables at risk of being dropped. Keep this section clear and actionable. Do not add json code blocks to this file.
+- `output/runs/${CLAUDE_SESSION_ID}/<analyzed_skill_name>_complexity.md`. Open with a section titled `## Where the Cognitive Load Spikes (Strict or Unclear Rules)`. Detail the most critical friction points, structural contradictions, and variables at risk of being dropped. Keep this section clear and actionable. Do not add json code blocks to this file.
 
-- `output/runs/${CLAUDE_SESSION_ID}/<analyzed_skill_name>_narrative.md`. Provide valid JSON containing the keys `skill_name`, `overall_vulnerability_rating`, and `heatmap_data`.
+- `output/runs/${CLAUDE_SESSION_ID}/<analyzed_skill_name>_narrative.json`. Provide valid JSON containing the keys `skill_name`, `overall_vulnerability_rating`, and `heatmap_data`.
 
 Important rules:
 - Treat `output/` as project-relative.
@@ -70,7 +70,7 @@ Important rules:
 
 ---
 
-### SAMPLE OUTPUT FORMAT
+### SAMPLE OUTPUT FILES
 
 ## Where the Cognitive Load Spikes (Strict or Unclear Rules) - <analyzed_skill_name>_narrative.md
 
