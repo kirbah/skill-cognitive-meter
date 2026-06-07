@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>SKILL-COGNITIVE-METER | Cognitive Analysis Report</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&amp;family=Space+Grotesk:wght@300;400;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --critical: #FF0055;
+            --high: #FF8800;
+            --moderate: #FFCC00;
+            --low: #00FF88;
+        }
+
+        body {
+            background-color: #10131a;
+            color: #e1e2eb;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+
+        .glow-sm {
+            text-shadow: 0 0 10px rgba(0, 219, 233, 0.4);
+        }
+
+        .cell-critical {
+            background-color: rgba(255, 0, 85, 0.2);
+            border: 1px solid rgba(255, 0, 85, 0.5);
+            box-shadow: inset 0 0 10px rgba(255, 0, 85, 0.2);
+        }
+
+        .cell-high {
+            background-color: rgba(255, 136, 0, 0.2);
+            border: 1px solid rgba(255, 136, 0, 0.5);
+            box-shadow: inset 0 0 10px rgba(255, 136, 0, 0.2);
+        }
+
+        .cell-moderate {
+            background-color: rgba(255, 204, 0, 0.2);
+            border: 1px solid rgba(255, 204, 0, 0.5);
+            box-shadow: inset 0 0 10px rgba(255, 204, 0, 0.2);
+        }
+
+        .cell-low {
+            background-color: rgba(0, 255, 136, 0.2);
+            border: 1px solid rgba(0, 255, 136, 0.5);
+            box-shadow: inset 0 0 10px rgba(0, 255, 136, 0.2);
+        }
+
+        .cell-hover:hover {
+            filter: brightness(1.5);
+            box-shadow: 0 0 15px currentColor;
+            z-index: 10;
+            transform: scale(1.05);
+        }
+
+        .scan-line {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(0, 219, 233, 0.2), transparent);
+            position: absolute;
+            animation: scan 4s linear infinite;
+        }
+
+        @keyframes scan {
+            0% {
+                top: 0;
+            }
+
+            100% {
+                top: 100%;
+            }
+        }
+
+        .stagger-load>* {
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeInUp 0.4s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(132, 148, 149, 0.3);
+            border-radius: 2px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 219, 233, 0.5);
+        }
+
+        /* Markdown Narrative Styling */
+        #narrative-markdown-content h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: #dbfcff;
+            margin-top: 16px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(132, 148, 149, 0.2);
+            padding-bottom: 4px;
+        }
+        #narrative-markdown-content h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: #dbfcff;
+            margin-top: 20px;
+            margin-bottom: 8px;
+        }
+        #narrative-markdown-content p {
+            margin-bottom: 12px;
+            line-height: 1.6;
+            color: #b9cacb;
+        }
+        #narrative-markdown-content ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin-bottom: 16px;
+        }
+        #narrative-markdown-content li {
+            margin-bottom: 12px;
+            position: relative;
+        }
+        /* Top-level list item (e.g. Output Contract) */
+        #narrative-markdown-content > ul > li {
+            border-left: 2px solid rgba(59, 73, 75, 0.5); /* border-outline-variant/30 */
+            padding-left: 16px;
+            margin-bottom: 24px;
+        }
+        #narrative-markdown-content > ul > li > strong {
+            font-size: 16px;
+            display: block;
+            margin-bottom: 8px;
+            color: #dbfcff; /* primary */
+        }
+        /* Nested list */
+        #narrative-markdown-content > ul > li > ul {
+            padding-left: 0;
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        #narrative-markdown-content > ul > li > ul > li {
+            background-color: rgba(11, 14, 20, 0.5); /* bg-surface-container-lowest/50 */
+            padding: 12px 16px;
+            border-radius: 4px;
+            border: 1px solid rgba(59, 73, 75, 0.2); /* border-outline-variant/10 */
+            font-size: 13px;
+            color: #e1e2eb;
+            line-height: 1.5;
+        }
+        #narrative-markdown-content > ul > li > ul > li::before {
+            content: none; /* remove default dot */
+        }
+
+        /* Score Badge Classes */
+        .score-badge-CRITICAL {
+            color: #FF0055;
+            background-color: rgba(255, 0, 85, 0.1);
+            border-color: rgba(255, 0, 85, 0.3);
+        }
+        .score-badge-HIGH {
+            color: #FF8800;
+            background-color: rgba(255, 136, 0, 0.1);
+            border-color: rgba(255, 136, 0, 0.3);
+        }
+        .score-badge-MODERATE {
+            color: #FFCC00;
+            background-color: rgba(255, 204, 0, 0.1);
+            border-color: rgba(255, 204, 0, 0.3);
+        }
+        .score-badge-LOW {
+            color: #00FF88;
+            background-color: rgba(0, 255, 136, 0.1);
+            border-color: rgba(0, 255, 136, 0.3);
+        }
+    </style>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#3b2f00",
+                        "surface-container-highest": "#32353c",
+                        "primary-fixed": "#7df4ff",
+                        "on-primary-fixed": "#002022",
+                        "on-error-container": "#ffdad6",
+                        "error-container": "#93000a",
+                        "inverse-primary": "#006970",
+                        "surface-container-lowest": "#0b0e14",
+                        "primary-container": "#00f0ff",
+                        "on-primary": "#00363a",
+                        "outline": "#849495",
+                        "surface": "#10131a",
+                        "on-primary-container": "#006970",
+                        "surface-container-high": "#272a31",
+                        "tertiary-container": "#fed639",
+                        "on-secondary-container": "#ddcdff",
+                        "inverse-surface": "#e1e2eb",
+                        "on-secondary-fixed-variant": "#5700c9",
+                        "on-primary-fixed-variant": "#004f54",
+                        "inverse-on-surface": "#2e3037",
+                        "secondary-container": "#7000ff",
+                        "primary-fixed-dim": "#00dbe9",
+                        "on-surface-variant": "#b9cacb",
+                        "on-tertiary-container": "#715d00",
+                        "secondary-fixed-dim": "#d1bcff",
+                        "surface-container": "#1d2026",
+                        "error": "#ffb4ab",
+                        "surface-tint": "#00dbe9",
+                        "on-tertiary-fixed-variant": "#554500",
+                        "background": "#10131a",
+                        "on-tertiary-fixed": "#231b00",
+                        "surface-container-low": "#191c22",
+                        "tertiary": "#fff5de",
+                        "on-secondary": "#3c0090",
+                        "on-secondary-fixed": "#23005b",
+                        "tertiary-fixed-dim": "#eac324",
+                        "outline-variant": "#3b494b",
+                        "on-background": "#e1e2eb",
+                        "surface-variant": "#32353c",
+                        "primary": "#dbfcff",
+                        "on-surface": "#e1e2eb",
+                        "surface-dim": "#10131a",
+                        "secondary-fixed": "#e9ddff",
+                        "on-error": "#690005",
+                        "secondary": "#d1bcff",
+                        "tertiary-fixed": "#ffe179",
+                        "surface-bright": "#363940"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "lg": "24px",
+                        "base": "4px",
+                        "margin": "24px",
+                        "xl": "40px",
+                        "gutter": "16px",
+                        "md": "16px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "data-mono": ["JetBrains Mono"],
+                        "headline-md": ["Space Grotesk"],
+                        "label-caps": ["JetBrains Mono"],
+                        "body-lg": ["Geist"],
+                        "display-lg": ["Space Grotesk"],
+                        "headline-lg": ["Space Grotesk"],
+                        "body-md": ["Geist"]
+                    },
+                    "fontSize": {
+                        "data-mono": ["14px", { "lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+
+<body class="font-body-md text-body-md overflow-hidden h-screen flex flex-col bg-background animate-in fade-in duration-500">
+    <div class="flex h-full">
+        <!-- Main Canvas -->
+        <main class="flex-1 p-lg overflow-y-auto">
+            <!-- Hero Section -->
+            <section
+                class="mb-xl flex flex-col md:flex-row justify-between items-start md:items-end gap-lg border-b border-outline-variant/20 pb-lg relative">
+                <div class="scan-line opacity-20"></div>
+                <div>
+                    <span
+                        class="font-label-caps text-label-caps text-primary uppercase tracking-[0.2em] mb-xs block">Technical
+                        Skill Analysis</span>
+                      <h1 class="font-display-lg text-display-lg text-primary tracking-tight" id="run-title">last30days</h1>
+                      <p class="font-data-mono text-data-mono text-on-surface-variant max-w-xl mt-sm" id="run-subtitle">Cognitive complexity
+                          mapping of the production execution stream. Monitoring rule friction and directive strictness
+                          patterns across 24 analytical nodes.</p>
+                </div>
+                <div
+                    class="bg-surface-container p-lg border border-outline-variant/30 flex flex-col items-center min-w-[200px] relative overflow-hidden" id="vulnerability-badge">
+                    <div class="absolute inset-0 bg-error/5 animate-pulse" id="vulnerability-pulse"></div>
+                    <span class="font-label-caps text-label-caps text-on-surface-variant mb-sm">VULNERABILITY</span>
+                    <div
+                        class="text-[64px] font-bold leading-none text-error drop-shadow-[0_0_15px_rgba(255,180,171,0.5)]" id="vulnerability-rating">
+                        HIGH</div>
+                    <div class="flex gap-xs mt-sm w-full" id="vulnerability-bars">
+                        <div class="h-1 flex-1 bg-error"></div>
+                        <div class="h-1 flex-1 bg-error"></div>
+                        <div class="h-1 flex-1 bg-error"></div>
+                        <div class="h-1 flex-1 bg-outline-variant"></div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-lg h-[calc(100vh-240px)]">
+                <!-- Left Section: Heatmap & Runs Archive -->
+                <div class="lg:col-span-7 flex flex-col h-full stagger-load justify-between">
+                    <div class="flex-1 min-h-0 flex flex-col">
+                        <div class="flex items-center justify-between mb-md shrink-0">
+                            <h2 class="font-headline-md text-headline-md text-primary">Skill Cognitive Heatmap</h2>
+                            <div class="flex gap-md">
+                                <div class="flex items-center gap-xs">
+                                    <div class="w-3 h-3 cell-critical rounded-full"></div><span
+                                        class="font-label-caps text-[10px] text-on-surface-variant">CRITICAL</span>
+                                </div>
+                                <div class="flex items-center gap-xs">
+                                    <div class="w-3 h-3 cell-high rounded-full"></div><span
+                                        class="font-label-caps text-[10px] text-on-surface-variant">HIGH</span>
+                                </div>
+                                <div class="flex items-center gap-xs">
+                                    <div class="w-3 h-3 cell-moderate rounded-full"></div><span
+                                        class="font-label-caps text-[10px] text-on-surface-variant">MODERATE</span>
+                                </div>
+                                <div class="flex items-center gap-xs">
+                                    <div class="w-3 h-3 cell-low rounded-full"></div><span
+                                        class="font-label-caps text-[10px] text-on-surface-variant">LOW</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="flex-1 overflow-y-auto custom-scrollbar space-y-base bg-surface-container-low/50 p-sm border border-outline-variant/10 rounded-lg min-h-0" id="heatmap-grid-container">
+                            <!-- Heatmap rows will load dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Analysis Runs Archive -->
+                    <div class="mt-lg bg-surface-variant/20 border border-outline-variant/30 p-md rounded-lg flex flex-col shrink-0">
+                        <span class="font-label-caps text-xs text-primary mb-sm block">Analysis Runs History</span>
+                        <div class="flex flex-col gap-sm overflow-y-auto max-h-[140px] pr-xs custom-scrollbar" id="runs-list">
+                            <!-- Runs list items dynamically loaded -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Section: Side Info Panel -->
+                <div class="lg:col-span-5 h-full flex flex-col">
+                    <div class="bg-surface-container-high/50 backdrop-blur-md border border-primary/20 p-lg rounded-lg h-full flex flex-col relative transition-all duration-300"
+                        id="details-panel">
+                        <div id="default-panel-header" class="flex items-center gap-sm mb-lg shrink-0">
+                            <span class="material-symbols-outlined text-primary">psychology_alt</span>
+                            <h3 class="font-headline-md text-headline-md text-primary">Where the Cognitive Load Spikes
+                            </h3>
+                        </div>
+                        <div class="flex-1 overflow-y-auto pr-sm custom-scrollbar min-h-0"
+                            id="default-panel-content">
+                            <div id="narrative-markdown-content" class="space-y-lg">
+                                <!-- Narrative Markdown will render here -->
+                            </div>
+                        </div>
+
+                        <!-- Active Hover Details Panel -->
+                        <div class="hidden flex-col h-full animate-in fade-in slide-in-from-right-4 duration-300 absolute inset-0 bg-surface-container-high p-lg rounded-lg overflow-y-auto custom-scrollbar"
+                            id="active-panel-content">
+                            <div class="mb-lg">
+                                <span class="font-label-caps text-[10px] text-on-surface-variant block mb-xs">METRIC
+                                    CATEGORY</span>
+                                <div class="font-headline-md text-headline-md text-primary uppercase" id="metric-title">
+                                    Dependency Depth</div>
+                            </div>
+                            <div class="mb-lg">
+                                <span class="font-label-caps text-[10px] text-on-surface-variant block mb-xs">SCORE /
+                                    STATUS</span>
+                                <div class="inline-block px-md py-xs rounded-sm text-[12px] font-bold tracking-widest border"
+                                    id="metric-status">CRITICAL</div>
+                            </div>
+                            <div class="mb-lg">
+                                <span class="font-label-caps text-[10px] text-on-surface-variant block mb-xs">RISK
+                                    DESCRIPTION</span>
+                                <p class="font-body-md text-on-surface-variant leading-relaxed" id="metric-desc">
+                                    Primary execution stream has exceeded the safe complexity threshold. Rule friction
+                                    is causing significant cognitive overhead for the processor.
+                                </p>
+                            </div>
+                            <div class="mb-lg">
+                                <span class="font-label-caps text-[10px] text-on-surface-variant block mb-md">IDENTIFIED
+                                    TRIGGERS</span>
+                                <div class="flex flex-wrap gap-sm" id="metric-triggers">
+                                    <!-- Dynamic Tech Tags -->
+                                </div>
+                            </div>
+                            <div class="pt-lg border-t border-outline-variant/30 mt-auto">
+                                <button
+                                    class="w-full py-md border border-primary/40 text-primary font-label-caps text-[11px] hover:bg-primary/10 transition-colors flex items-center justify-center gap-sm"
+                                    onclick="resetDetails()">
+                                    <span class="material-symbols-outlined text-[14px]">arrow_back</span> RETURN TO OVERVIEW
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Runs data injected by Python script -->
+    <script id="runs-data">
+        /* RUNS_DATA_PLACEHOLDER */
+    </script>
+
+    <script>
+        let activeRunIndex = 0;
+
+        function updateVulnerabilityBadge(score) {
+            const pulseEl = document.getElementById('vulnerability-pulse');
+            const ratingEl = document.getElementById('vulnerability-rating');
+            const barsEl = document.getElementById('vulnerability-bars');
+
+            ratingEl.textContent = score;
+
+            // Reset classes
+            ratingEl.className = 'text-[64px] font-bold leading-none transition-all duration-300';
+            pulseEl.className = 'absolute inset-0 animate-pulse transition-all duration-300';
+
+            let barsHtml = '';
+            const totalBars = 4;
+            let filledBars = 0;
+            let barColorClass = '';
+
+            if (score === 'CRITICAL') {
+                ratingEl.classList.add('text-error', 'drop-shadow-[0_0_15px_rgba(255,0,85,0.5)]');
+                pulseEl.classList.add('bg-error/5');
+                filledBars = 4;
+                barColorClass = 'bg-[#FF0055]';
+            } else if (score === 'HIGH') {
+                ratingEl.classList.add('text-[#FF8800]', 'drop-shadow-[0_0_15px_rgba(255,136,0,0.5)]');
+                pulseEl.classList.add('bg-[#FF8800]/5');
+                filledBars = 3;
+                barColorClass = 'bg-[#FF8800]';
+            } else if (score === 'MODERATE') {
+                ratingEl.classList.add('text-[#FFCC00]', 'drop-shadow-[0_0_15px_rgba(255,204,0,0.5)]');
+                pulseEl.classList.add('bg-[#FFCC00]/5');
+                filledBars = 2;
+                barColorClass = 'bg-[#FFCC00]';
+            } else { // LOW
+                ratingEl.classList.add('text-[#00FF88]', 'drop-shadow-[0_0_15px_rgba(0,255,136,0.5)]');
+                pulseEl.classList.add('bg-[#00FF88]/5');
+                filledBars = 1;
+                barColorClass = 'bg-[#00FF88]';
+            }
+
+            for (let i = 0; i < totalBars; i++) {
+                if (i < filledBars) {
+                    barsHtml += `<div class="h-1 flex-1 ${barColorClass} transition-colors duration-300"></div>`;
+                } else {
+                    barsHtml += `<div class="h-1 flex-1 bg-outline-variant transition-colors duration-300"></div>`;
+                }
+            }
+            barsEl.innerHTML = barsHtml;
+        }
+
+        function renderHeatmap(heatmapData) {
+            const container = document.getElementById('heatmap-grid-container');
+            container.innerHTML = '';
+
+            if (!heatmapData || heatmapData.length === 0) {
+                container.innerHTML = '<p class="font-data-mono text-xs text-on-surface-variant p-md text-center">No heatmap data available for this run.</p>';
+                return;
+            }
+
+            heatmapData.forEach((row, rowIndex) => {
+                const rowEl = document.createElement('div');
+                rowEl.className = 'group flex items-center gap-base h-12';
+                rowEl.style.animationDelay = `${(rowIndex + 1) * 0.05}s`;
+
+                const labelEl = document.createElement('div');
+                labelEl.className = 'w-48 shrink-0 font-data-mono text-[10px] text-on-surface-variant truncate pr-md';
+                labelEl.title = row.section;
+                labelEl.textContent = row.section;
+                rowEl.appendChild(labelEl);
+
+                const hasMetrics = row.metrics && row.metrics.length > 0;
+                if (!hasMetrics) {
+                    // CLEAN PASS row
+                    const progressBg = document.createElement('div');
+                    progressBg.className = 'flex-1 h-2 bg-primary/10 border border-primary/20 rounded-full overflow-hidden self-center';
+                    
+                    const progressFill = document.createElement('div');
+                    progressFill.className = 'h-full w-full bg-primary/30 animate-pulse';
+                    progressBg.appendChild(progressFill);
+                    rowEl.appendChild(progressBg);
+
+                    const passLabel = document.createElement('span');
+                    passLabel.className = 'font-label-caps text-[10px] text-primary px-sm';
+                    passLabel.textContent = 'CLEAN PASS';
+                    rowEl.appendChild(passLabel);
+                } else {
+                    // Grid of cells
+                    const gridEl = document.createElement('div');
+                    gridEl.className = 'flex-1 grid grid-cols-12 gap-base h-full';
+
+                    row.metrics.forEach((metric) => {
+                        const cell = document.createElement('div');
+                        const scoreLower = metric.score.toLowerCase();
+                        cell.className = `cell-${scoreLower} cell-hover cursor-pointer`;
+                        
+                        const escapedCategory = metric.category.replace(/_/g, ' ').replace(/'/g, "\\'");
+                        const escapedScore = metric.score.replace(/'/g, "\\'");
+                        const escapedRisk = metric.risk.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                        const triggersJson = JSON.stringify(metric.triggers || []).replace(/'/g, "\\'");
+
+                        cell.setAttribute('onmouseover', `updateDetails('${escapedCategory}', '${escapedScore}', '${escapedRisk}', ${triggersJson})`);
+                        gridEl.appendChild(cell);
+                    });
+
+                    const usedCols = row.metrics.length;
+                    if (usedCols < 12) {
+                        const spacer = document.createElement('div');
+                        spacer.className = `col-span-${12 - usedCols} bg-surface-container-high/20 border border-outline-variant/10`;
+                        gridEl.appendChild(spacer);
+                    }
+                    rowEl.appendChild(gridEl);
+                }
+
+                container.appendChild(rowEl);
+            });
+        }
+
+        function renderRunsList() {
+            const container = document.getElementById('runs-list');
+            container.innerHTML = '';
+
+            runs.forEach((run, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full text-left p-sm rounded border border-outline-variant/10 hover:border-primary/30 hover:bg-surface-container-high/40 transition-all flex items-center justify-between group';
+                btn.onclick = () => selectRun(index);
+                btn.setAttribute('id', `run-item-${index}`);
+
+                const leftDiv = document.createElement('div');
+                leftDiv.className = 'flex items-center gap-sm truncate';
+
+                const dot = document.createElement('span');
+                dot.className = 'w-2 h-2 rounded-full shrink-0';
+                
+                const score = run.overall_vulnerability_rating;
+                if (score === 'CRITICAL') dot.classList.add('bg-[#FF0055]');
+                else if (score === 'HIGH') dot.classList.add('bg-[#FF8800]');
+                else if (score === 'MODERATE') dot.classList.add('bg-[#FFCC00]');
+                else dot.classList.add('bg-[#00FF88]');
+
+                const nameText = document.createElement('span');
+                nameText.className = 'font-data-mono text-[11px] text-on-surface-variant group-hover:text-primary transition-colors truncate';
+                nameText.textContent = run.skill_name;
+
+                leftDiv.appendChild(dot);
+                leftDiv.appendChild(nameText);
+
+                const rightTime = document.createElement('span');
+                rightTime.className = 'font-data-mono text-[10px] text-on-surface-variant/60 shrink-0 pl-sm';
+                rightTime.textContent = run.created_at;
+
+                btn.appendChild(leftDiv);
+                btn.appendChild(rightTime);
+                container.appendChild(btn);
+            });
+        }
+
+        function selectRun(index) {
+            // Remove active style from old button
+            const oldBtn = document.getElementById(`run-item-${activeRunIndex}`);
+            if (oldBtn) {
+                oldBtn.classList.remove('border-primary', 'bg-surface-container-high/60');
+                oldBtn.classList.add('border-outline-variant/10');
+            }
+
+            activeRunIndex = index;
+            const run = runs[index];
+
+            // Add active style to new button
+            const newBtn = document.getElementById(`run-item-${index}`);
+            if (newBtn) {
+                newBtn.classList.add('border-primary', 'bg-surface-container-high/60');
+                newBtn.classList.remove('border-outline-variant/10');
+            }
+
+            // Update title
+            document.getElementById('run-title').textContent = run.skill_name;
+            document.getElementById('run-subtitle').textContent = `Cognitive complexity mapping. Analysis generated at: ${run.created_at}`;
+
+            // Update vulnerability badge
+            updateVulnerabilityBadge(run.overall_vulnerability_rating);
+
+            // Update Heatmap
+            renderHeatmap(run.heatmap_data);
+
+            // Preprocess narrative MD to convert scores to badges
+            // Pattern: \*\*([^*]+)\s+\((?:Score\s+)?(CRITICAL|HIGH|MODERATE|LOW)\):\*\*
+            // Or pattern matching simple brackets: \*\*([^*]+)\s+\((CRITICAL|HIGH|MODERATE|LOW)\):\*\*
+            const mdWithBadges = run.narrative_md.replace(/\*\*([^*]+)\s+\((?:Score\s+)?(CRITICAL|HIGH|MODERATE|LOW)\):\*\*/gi, (match, name, level) => {
+                const upperLevel = level.toUpperCase();
+                return `<div class="flex justify-between items-center mb-1"><span class="font-label-caps text-[10px] text-primary">${name}</span><span class="font-label-caps text-[10px] score-badge-${upperLevel} px-2 py-[2px] border rounded">${upperLevel}</span></div>`;
+            });
+
+            // Update narrative content
+            document.getElementById('narrative-markdown-content').innerHTML = marked.parse(mdWithBadges);
+
+            // Return details card to overview state
+            resetDetails();
+        }
+
+        function updateDetails(category, score, description, triggers) {
+            const activePanel = document.getElementById('active-panel-content');
+            activePanel.classList.remove('hidden');
+            activePanel.classList.add('flex');
+
+            document.getElementById('metric-title').textContent = category;
+
+            const statusEl = document.getElementById('metric-status');
+            statusEl.textContent = score;
+            statusEl.className = 'inline-block px-md py-xs rounded-sm text-[12px] font-bold tracking-widest border';
+
+            if (score === 'CRITICAL') {
+                statusEl.classList.add('bg-error/20', 'text-error', 'border-error/50');
+            } else if (score === 'HIGH') {
+                statusEl.classList.add('bg-[#FF880022]', 'text-[#FF8800]', 'border-[#FF880088]');
+            } else if (score === 'MODERATE') {
+                statusEl.classList.add('bg-[#FFCC0022]', 'text-[#FFCC00]', 'border-[#FFCC0088]');
+            } else { // LOW
+                statusEl.classList.add('bg-[rgba(0,255,136,0.15)]', 'text-[#00FF88]', 'border-[#00FF8888]');
+            }
+
+            document.getElementById('metric-desc').textContent = description;
+
+            const triggerContainer = document.getElementById('metric-triggers');
+            triggerContainer.innerHTML = '';
+            triggers.forEach(t => {
+                const tag = document.createElement('span');
+                tag.className = 'px-sm py-[2px] bg-surface-container-highest border border-outline-variant text-on-surface-variant font-data-mono text-[10px] rounded-xs';
+                tag.textContent = t;
+                triggerContainer.appendChild(tag);
+            });
+        }
+
+        function resetDetails() {
+            const activePanel = document.getElementById('active-panel-content');
+            activePanel.classList.remove('flex');
+            activePanel.classList.add('hidden');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (typeof runs !== 'undefined' && runs.length > 0) {
+                renderRunsList();
+                selectRun(0);
+            } else {
+                document.getElementById('heatmap-grid-container').innerHTML = '<p class="font-data-mono text-xs text-on-surface-variant p-md text-center">No runs data found. Please run the build script.</p>';
+                document.getElementById('narrative-markdown-content').innerHTML = '<p class="font-data-mono text-xs text-on-surface-variant p-md text-center">No narrative data available.</p>';
+            }
+        });
+    </script>
+</body>
+
+</html>
