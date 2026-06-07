@@ -47,7 +47,7 @@ def main():
                     narrative_md = f.read()
                 
                 skill_name = complexity_data.get("skill_name", subfolder.name)
-                overall_rating = complexity_data.get("overall_vulnerability_rating", "MODERATE")
+                overall_rating = complexity_data.get("overall_cognitive_rating", "MODERATE")
                 heatmap_data = complexity_data.get("heatmap_data", [])
                 
                 # Use JSON file's modification time as the execution time
@@ -57,7 +57,7 @@ def main():
                 runs.append({
                     "skill_name": skill_name,
                     "created_at": created_at,
-                    "overall_vulnerability_rating": overall_rating,
+                    "overall_cognitive_rating": overall_rating,
                     "heatmap_data": heatmap_data,
                     "narrative_md": narrative_md,
                     "_timestamp": mtime

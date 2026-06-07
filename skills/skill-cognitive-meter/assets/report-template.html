@@ -377,13 +377,13 @@
                         patterns across 24 analytical nodes.</p>
                 </div>
                 <div class="bg-surface-container p-lg border border-outline-variant/30 flex flex-col items-center min-w-[200px] relative overflow-hidden"
-                    id="vulnerability-badge">
-                    <div class="absolute inset-0 bg-error/5 animate-pulse" id="vulnerability-pulse"></div>
+                    id="cognitive-badge">
+                    <div class="absolute inset-0 bg-error/5 animate-pulse" id="cognitive-pulse"></div>
                     <span class="font-label-caps text-label-caps text-on-surface-variant mb-sm">COGNITIVE LOAD</span>
                     <div class="text-[64px] font-bold leading-none text-error drop-shadow-[0_0_15px_rgba(255,180,171,0.5)]"
-                        id="vulnerability-rating">
+                        id="cognitive-rating">
                         HIGH</div>
-                    <div class="flex gap-xs mt-sm w-full" id="vulnerability-bars">
+                    <div class="flex gap-xs mt-sm w-full" id="cognitive-bars">
                         <div class="h-1 flex-1 bg-error"></div>
                         <div class="h-1 flex-1 bg-error"></div>
                         <div class="h-1 flex-1 bg-error"></div>
@@ -546,10 +546,10 @@
             element.scrambleRequestId = requestAnimationFrame(update);
         }
 
-        function updateVulnerabilityBadge(score) {
-            const pulseEl = document.getElementById('vulnerability-pulse');
-            const ratingEl = document.getElementById('vulnerability-rating');
-            const barsEl = document.getElementById('vulnerability-bars');
+        function updateCognitiveBadge(score) {
+            const pulseEl = document.getElementById('cognitive-pulse');
+            const ratingEl = document.getElementById('cognitive-rating');
+            const barsEl = document.getElementById('cognitive-bars');
 
             ratingEl.textContent = score;
 
@@ -694,7 +694,7 @@
                 const dot = document.createElement('span');
                 dot.className = 'w-2 h-2 rounded-full shrink-0';
 
-                const score = run.overall_vulnerability_rating;
+                const score = run.overall_cognitive_rating;
                 if (score === 'CRITICAL') dot.classList.add('bg-[#FF0055]');
                 else if (score === 'HIGH') dot.classList.add('bg-[#FF8800]');
                 else if (score === 'MODERATE') dot.classList.add('bg-[#FFCC00]');
@@ -740,8 +740,8 @@
             }
             document.getElementById('run-subtitle').textContent = `Cognitive complexity mapping. Analysis generated at: ${run.created_at}`;
 
-            // Update vulnerability badge
-            updateVulnerabilityBadge(run.overall_vulnerability_rating);
+            // Update cognitive badge
+            updateCognitiveBadge(run.overall_cognitive_rating);
 
             // Update Heatmap
             renderHeatmap(run.heatmap_data);
