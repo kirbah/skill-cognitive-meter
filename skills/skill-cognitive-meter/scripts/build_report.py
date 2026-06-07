@@ -95,6 +95,8 @@ def main():
             
         # Serialize runs data to JS declaration
         runs_json_str = json.dumps(runs, indent=4, ensure_ascii=False)
+        # Prevent HTML script tag breakout
+        runs_json_str = runs_json_str.replace("</", "<\\/")
         runs_js_decl = f"const runs = {runs_json_str};"
         
         # Inject the runs array into the HTML
