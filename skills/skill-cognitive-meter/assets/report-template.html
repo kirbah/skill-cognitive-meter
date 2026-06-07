@@ -110,13 +110,16 @@
             width: 5px;
             height: 5px;
         }
+
         .custom-scrollbar::-webkit-scrollbar-track {
-            background: rgba(0,0,0,0.1);
+            background: rgba(0, 0, 0, 0.1);
         }
+
         .custom-scrollbar::-webkit-scrollbar-thumb {
             background: rgba(132, 148, 149, 0.3);
             border-radius: 2px;
         }
+
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: rgba(0, 219, 233, 0.5);
         }
@@ -132,6 +135,7 @@
             border-bottom: 1px solid rgba(132, 148, 149, 0.2);
             padding-bottom: 4px;
         }
+
         #narrative-markdown-content h3 {
             font-family: 'Space Grotesk', sans-serif;
             font-size: 17px;
@@ -140,52 +144,66 @@
             margin-top: 20px;
             margin-bottom: 8px;
         }
+
         #narrative-markdown-content p {
             margin-bottom: 12px;
             line-height: 1.6;
             color: #b9cacb;
             font-size: 15px;
         }
+
         #narrative-markdown-content ul {
             list-style-type: none;
             padding-left: 0;
             margin-bottom: 16px;
         }
+
         #narrative-markdown-content li {
             margin-bottom: 12px;
             position: relative;
         }
+
         /* Top-level list item (e.g. Output Contract) */
-        #narrative-markdown-content > ul > li {
-            border-left: 2px solid rgba(59, 73, 75, 0.5); /* border-outline-variant/30 */
+        #narrative-markdown-content>ul>li {
+            border-left: 2px solid rgba(59, 73, 75, 0.5);
+            /* border-outline-variant/30 */
             padding-left: 16px;
             margin-bottom: 24px;
         }
-        #narrative-markdown-content > ul > li > strong {
+
+        #narrative-markdown-content>ul>li>strong {
             font-size: 17px;
             display: block;
             margin-bottom: 10px;
-            color: #dbfcff; /* primary */
+            color: #dbfcff;
+            /* primary */
         }
+
         /* Nested list */
-        #narrative-markdown-content > ul > li > ul {
+        #narrative-markdown-content>ul>li>ul {
             padding-left: 0;
             margin-top: 8px;
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
-        #narrative-markdown-content > ul > li > ul > li {
-            background-color: rgba(11, 14, 20, 0.5); /* bg-surface-container-lowest/50 */
+
+        #narrative-markdown-content>ul>li>ul>li {
+            background-color: rgba(11, 14, 20, 0.5);
+            /* bg-surface-container-lowest/50 */
             padding: 12px 16px;
             border-radius: 4px;
-            border: 1px solid rgba(59, 73, 75, 0.2); /* border-outline-variant/10 */
-            font-size: 15px; /* Scaled up for readability */
+            border: 1px solid rgba(59, 73, 75, 0.2);
+            /* border-outline-variant/10 */
+            font-size: 15px;
+            /* Scaled up for readability */
             color: #e1e2eb;
             line-height: 1.6;
         }
-        #narrative-markdown-content > ul > li > ul > li::before {
-            content: none; /* remove default dot */
+
+        #narrative-markdown-content>ul>li>ul>li::before {
+            content: none;
+            /* remove default dot */
         }
 
         /* Score Badge Classes */
@@ -194,16 +212,19 @@
             background-color: rgba(255, 0, 85, 0.1);
             border-color: rgba(255, 0, 85, 0.3);
         }
+
         .score-badge-HIGH {
             color: #FF8800;
             background-color: rgba(255, 136, 0, 0.1);
             border-color: rgba(255, 136, 0, 0.3);
         }
+
         .score-badge-MODERATE {
             color: #FFCC00;
             background-color: rgba(255, 204, 0, 0.1);
             border-color: rgba(255, 204, 0, 0.3);
         }
+
         .score-badge-LOW {
             color: #00FF88;
             background-color: rgba(0, 255, 136, 0.1);
@@ -216,11 +237,14 @@
                 opacity: 0;
                 transform: scale(0.3) translateY(10px);
             }
+
             50% {
                 opacity: 1;
                 transform: scale(1.1) translateY(-2px);
-                box-shadow: 0 0 15px currentColor; /* Uses the text color of the cell to glow */
+                box-shadow: 0 0 15px currentColor;
+                /* Uses the text color of the cell to glow */
             }
+
             100% {
                 opacity: 1;
                 transform: scale(1) translateY(0);
@@ -228,7 +252,8 @@
         }
 
         .animate-cascade-cell {
-            opacity: 0; /* Hide initially */
+            opacity: 0;
+            /* Hide initially */
             animation: cascade-enter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
 
@@ -331,7 +356,8 @@
     </script>
 </head>
 
-<body class="font-body-md text-body-md overflow-hidden h-screen flex flex-col bg-background animate-in fade-in duration-500">
+<body
+    class="font-body-md text-body-md overflow-hidden h-screen flex flex-col bg-background animate-in fade-in duration-500">
     <div class="flex h-full">
         <!-- Main Canvas -->
         <main class="flex-1 p-lg overflow-y-auto">
@@ -343,17 +369,19 @@
                     <span
                         class="font-label-caps text-label-caps text-primary uppercase tracking-[0.2em] mb-xs block">Technical
                         Skill Analysis</span>
-                      <h1 class="font-display-lg text-display-lg text-primary tracking-tight" id="run-title">last30days</h1>
-                      <p class="font-data-mono text-data-mono text-on-surface-variant max-w-xl mt-sm" id="run-subtitle">Cognitive complexity
-                          mapping of the production execution stream. Monitoring rule friction and directive strictness
-                          patterns across 24 analytical nodes.</p>
+                    <h1 class="font-display-lg text-display-lg text-primary tracking-tight" id="run-title">last30days
+                    </h1>
+                    <p class="font-data-mono text-data-mono text-on-surface-variant max-w-xl mt-sm" id="run-subtitle">
+                        Cognitive complexity
+                        mapping of the production execution stream. Monitoring rule friction and directive strictness
+                        patterns across 24 analytical nodes.</p>
                 </div>
-                <div
-                    class="bg-surface-container p-lg border border-outline-variant/30 flex flex-col items-center min-w-[200px] relative overflow-hidden" id="vulnerability-badge">
+                <div class="bg-surface-container p-lg border border-outline-variant/30 flex flex-col items-center min-w-[200px] relative overflow-hidden"
+                    id="vulnerability-badge">
                     <div class="absolute inset-0 bg-error/5 animate-pulse" id="vulnerability-pulse"></div>
-                    <span class="font-label-caps text-label-caps text-on-surface-variant mb-sm">VULNERABILITY</span>
-                    <div
-                        class="text-[64px] font-bold leading-none text-error drop-shadow-[0_0_15px_rgba(255,180,171,0.5)]" id="vulnerability-rating">
+                    <span class="font-label-caps text-label-caps text-on-surface-variant mb-sm">COGNITIVE LOAD</span>
+                    <div class="text-[64px] font-bold leading-none text-error drop-shadow-[0_0_15px_rgba(255,180,171,0.5)]"
+                        id="vulnerability-rating">
                         HIGH</div>
                     <div class="flex gap-xs mt-sm w-full" id="vulnerability-bars">
                         <div class="h-1 flex-1 bg-error"></div>
@@ -395,8 +423,8 @@
                             <!-- Run tabs will dynamically load here -->
                         </div>
 
-                        <div
-                            class="flex-1 overflow-y-auto custom-scrollbar space-y-base bg-surface-container-low/50 p-sm border border-outline-variant/10 rounded-lg min-h-0" id="heatmap-grid-container">
+                        <div class="flex-1 overflow-y-auto custom-scrollbar space-y-base bg-surface-container-low/50 p-sm border border-outline-variant/10 rounded-lg min-h-0"
+                            id="heatmap-grid-container">
                             <!-- Heatmap rows will load dynamically -->
                         </div>
                     </div>
@@ -411,8 +439,7 @@
                             <h3 class="font-headline-md text-headline-md text-primary">Where the Cognitive Load Spikes
                             </h3>
                         </div>
-                        <div class="flex-1 overflow-y-auto pr-sm custom-scrollbar min-h-0"
-                            id="default-panel-content">
+                        <div class="flex-1 overflow-y-auto pr-sm custom-scrollbar min-h-0" id="default-panel-content">
                             <div id="narrative-markdown-content" class="space-y-lg">
                                 <!-- Narrative Markdown will render here -->
                             </div>
@@ -422,7 +449,9 @@
                         <div class="hidden flex-col h-full animate-in fade-in slide-in-from-right-4 duration-300 absolute inset-0 bg-surface-container-high p-lg rounded-lg overflow-y-auto custom-scrollbar"
                             id="active-panel-content">
                             <!-- Top Right Close Button -->
-                            <button class="absolute top-md right-md text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center p-sm rounded-full hover:bg-surface-container-highest" onclick="resetDetails()" title="Return to Overview">
+                            <button
+                                class="absolute top-md right-md text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center p-sm rounded-full hover:bg-surface-container-highest"
+                                onclick="resetDetails()" title="Return to Overview">
                                 <span class="material-symbols-outlined text-lg">close</span>
                             </button>
 
@@ -441,7 +470,8 @@
                             <div class="mb-lg">
                                 <span class="font-label-caps text-xs text-on-surface-variant block mb-xs">RISK
                                     DESCRIPTION</span>
-                                <p class="text-body-md text-on-surface-variant leading-relaxed font-semibold text-[15px]" id="metric-desc">
+                                <p class="text-body-md text-on-surface-variant leading-relaxed font-semibold text-[15px]"
+                                    id="metric-desc">
                                     Primary execution stream has exceeded the safe complexity threshold. Rule friction
                                     is causing significant cognitive overhead for the processor.
                                 </p>
@@ -457,7 +487,8 @@
                                 <button
                                     class="w-full py-md border border-primary/40 text-primary font-label-caps text-[12px] hover:bg-primary/10 transition-colors flex items-center justify-center gap-sm"
                                     onclick="resetDetails()">
-                                    <span class="material-symbols-outlined text-[14px]">arrow_back</span> RETURN TO OVERVIEW
+                                    <span class="material-symbols-outlined text-[14px]">arrow_back</span> RETURN TO
+                                    OVERVIEW
                                 </button>
                             </div>
                         </div>
@@ -477,18 +508,18 @@
 
         function scrambleText(element, targetText, duration = 400) {
             const chars = '01X_$/\\#%&+-*[]{}';
-            
+
             // Cancel any existing scramble animation on this specific element
             if (element.scrambleRequestId) {
                 cancelAnimationFrame(element.scrambleRequestId);
             }
 
             const start = performance.now();
-            
+
             function update(time) {
                 const elapsed = time - start;
                 const progress = Math.min(elapsed / duration, 1);
-                
+
                 let result = '';
                 for (let i = 0; i < targetText.length; i++) {
                     if (targetText[i] === ' ') {
@@ -501,9 +532,9 @@
                         result += chars[Math.floor(Math.random() * chars.length)];
                     }
                 }
-                
+
                 element.textContent = result;
-                
+
                 if (progress < 1) {
                     element.scrambleRequestId = requestAnimationFrame(update);
                 } else {
@@ -511,7 +542,7 @@
                     delete element.scrambleRequestId;
                 }
             }
-            
+
             element.scrambleRequestId = requestAnimationFrame(update);
         }
 
@@ -584,7 +615,7 @@
                 labelEl.textContent = row.section;
 
                 // Stagger the label fade-in based on the row index
-                labelEl.style.animationDelay = `${rowIndex * 0.05}s`; 
+                labelEl.style.animationDelay = `${rowIndex * 0.05}s`;
 
                 rowEl.appendChild(labelEl);
 
@@ -593,7 +624,7 @@
                     // CLEAN PASS row
                     const progressBg = document.createElement('div');
                     progressBg.className = 'flex-1 h-2 bg-primary/10 border border-primary/20 rounded-full overflow-hidden self-center';
-                    
+
                     const progressFill = document.createElement('div');
                     progressFill.className = 'h-full w-full bg-primary/30 animate-pulse';
                     progressBg.appendChild(progressFill);
@@ -612,25 +643,25 @@
                         const cell = document.createElement('div');
                         const scoreLower = metric.score.toLowerCase();
                         cell.className = `cell-${scoreLower} cell-hover cursor-pointer animate-cascade-cell`;
-                        
+
                         const delay = (rowIndex + colIndex) * 0.03;
                         cell.style.animationDelay = `${delay}s`;
-                        
+
                         cell.dataset.category = metric.category.replace(/_/g, ' ');
                         cell.dataset.score = metric.score;
                         cell.dataset.risk = metric.risk;
                         cell.dataset.triggers = JSON.stringify(metric.triggers || []);
 
-                        cell.addEventListener('mouseenter', function() {
+                        cell.addEventListener('mouseenter', function () {
                             // Remove highlight from all cells
                             document.querySelectorAll('.cell-hover').forEach(c => c.style.borderColor = '');
                             // Add aggressive highlight to current cell
                             this.style.borderColor = '#ffffff';
 
                             updateDetails(
-                                this.dataset.category, 
-                                this.dataset.score, 
-                                this.dataset.risk, 
+                                this.dataset.category,
+                                this.dataset.score,
+                                this.dataset.risk,
                                 JSON.parse(this.dataset.triggers)
                             );
                         });
@@ -662,7 +693,7 @@
 
                 const dot = document.createElement('span');
                 dot.className = 'w-2 h-2 rounded-full shrink-0';
-                
+
                 const score = run.overall_vulnerability_rating;
                 if (score === 'CRITICAL') dot.classList.add('bg-[#FF0055]');
                 else if (score === 'HIGH') dot.classList.add('bg-[#FF8800]');
