@@ -36,34 +36,43 @@
         }
 
         .cell-critical {
-            background-color: rgba(255, 0, 85, 0.2);
-            border: 1px solid rgba(255, 0, 85, 0.5);
+            color: #FF0055;
+            background-color: rgba(255, 0, 85, 0.25);
+            border: 1px solid rgba(255, 0, 85, 0.6);
             box-shadow: inset 0 0 10px rgba(255, 0, 85, 0.2);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .cell-high {
-            background-color: rgba(255, 136, 0, 0.2);
-            border: 1px solid rgba(255, 136, 0, 0.5);
+            color: #FF8800;
+            background-color: rgba(255, 136, 0, 0.25);
+            border: 1px solid rgba(255, 136, 0, 0.6);
             box-shadow: inset 0 0 10px rgba(255, 136, 0, 0.2);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .cell-moderate {
-            background-color: rgba(255, 204, 0, 0.2);
-            border: 1px solid rgba(255, 204, 0, 0.5);
+            color: #FFCC00;
+            background-color: rgba(255, 204, 0, 0.25);
+            border: 1px solid rgba(255, 204, 0, 0.6);
             box-shadow: inset 0 0 10px rgba(255, 204, 0, 0.2);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .cell-low {
-            background-color: rgba(0, 255, 136, 0.2);
-            border: 1px solid rgba(0, 255, 136, 0.5);
+            color: #00FF88;
+            background-color: rgba(0, 255, 136, 0.25);
+            border: 1px solid rgba(0, 255, 136, 0.6);
             box-shadow: inset 0 0 10px rgba(0, 255, 136, 0.2);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .cell-hover:hover {
-            filter: brightness(1.5);
-            box-shadow: 0 0 15px currentColor;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.18));
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.35), inset 0 0 10px rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.85) !important;
             z-index: 10;
-            transform: scale(1.05);
+            transform: scale(1.06);
         }
 
         .scan-line {
@@ -98,7 +107,7 @@
         }
 
         .custom-scrollbar::-webkit-scrollbar {
-            width: 4px;
+            width: 5px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
             background: rgba(0,0,0,0.1);
@@ -124,7 +133,7 @@
         }
         #narrative-markdown-content h3 {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 600;
             color: #dbfcff;
             margin-top: 20px;
@@ -134,6 +143,7 @@
             margin-bottom: 12px;
             line-height: 1.6;
             color: #b9cacb;
+            font-size: 15px;
         }
         #narrative-markdown-content ul {
             list-style-type: none;
@@ -151,9 +161,9 @@
             margin-bottom: 24px;
         }
         #narrative-markdown-content > ul > li > strong {
-            font-size: 16px;
+            font-size: 17px;
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             color: #dbfcff; /* primary */
         }
         /* Nested list */
@@ -169,9 +179,9 @@
             padding: 12px 16px;
             border-radius: 4px;
             border: 1px solid rgba(59, 73, 75, 0.2); /* border-outline-variant/10 */
-            font-size: 13px;
+            font-size: 15px; /* Scaled up for readability */
             color: #e1e2eb;
-            line-height: 1.5;
+            line-height: 1.6;
         }
         #narrative-markdown-content > ul > li > ul > li::before {
             content: none; /* remove default dot */
@@ -335,19 +345,19 @@
                             <div class="flex gap-md">
                                 <div class="flex items-center gap-xs">
                                     <div class="w-3 h-3 cell-critical rounded-full"></div><span
-                                        class="font-label-caps text-[10px] text-on-surface-variant">CRITICAL</span>
+                                        class="font-label-caps text-xs text-on-surface-variant">CRITICAL</span>
                                 </div>
                                 <div class="flex items-center gap-xs">
                                     <div class="w-3 h-3 cell-high rounded-full"></div><span
-                                        class="font-label-caps text-[10px] text-on-surface-variant">HIGH</span>
+                                        class="font-label-caps text-xs text-on-surface-variant">HIGH</span>
                                 </div>
                                 <div class="flex items-center gap-xs">
                                     <div class="w-3 h-3 cell-moderate rounded-full"></div><span
-                                        class="font-label-caps text-[10px] text-on-surface-variant">MODERATE</span>
+                                        class="font-label-caps text-xs text-on-surface-variant">MODERATE</span>
                                 </div>
                                 <div class="flex items-center gap-xs">
                                     <div class="w-3 h-3 cell-low rounded-full"></div><span
-                                        class="font-label-caps text-[10px] text-on-surface-variant">LOW</span>
+                                        class="font-label-caps text-xs text-on-surface-variant">LOW</span>
                                 </div>
                             </div>
                         </div>
@@ -359,7 +369,7 @@
 
                     <!-- Analysis Runs Archive -->
                     <div class="mt-lg bg-surface-variant/20 border border-outline-variant/30 p-md rounded-lg flex flex-col shrink-0">
-                        <span class="font-label-caps text-xs text-primary mb-sm block">Analysis Runs History</span>
+                        <span class="font-label-caps text-sm text-primary mb-md block">Analysis Runs History</span>
                         <div class="flex flex-col gap-sm overflow-y-auto max-h-[140px] pr-xs custom-scrollbar" id="runs-list">
                             <!-- Runs list items dynamically loaded -->
                         </div>
@@ -385,28 +395,33 @@
                         <!-- Active Hover Details Panel -->
                         <div class="hidden flex-col h-full animate-in fade-in slide-in-from-right-4 duration-300 absolute inset-0 bg-surface-container-high p-lg rounded-lg overflow-y-auto custom-scrollbar"
                             id="active-panel-content">
+                            <!-- Top Right Close Button -->
+                            <button class="absolute top-md right-md text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center p-sm rounded-full hover:bg-surface-container-highest" onclick="resetDetails()" title="Return to Overview">
+                                <span class="material-symbols-outlined text-lg">close</span>
+                            </button>
+
                             <div class="mb-lg">
-                                <span class="font-label-caps text-[10px] text-on-surface-variant block mb-xs">METRIC
+                                <span class="font-label-caps text-xs text-on-surface-variant block mb-xs">METRIC
                                     CATEGORY</span>
                                 <div class="font-headline-md text-headline-md text-primary uppercase" id="metric-title">
                                     Dependency Depth</div>
                             </div>
                             <div class="mb-lg">
-                                <span class="font-label-caps text-[10px] text-on-surface-variant block mb-xs">SCORE /
+                                <span class="font-label-caps text-xs text-on-surface-variant block mb-xs">SCORE /
                                     STATUS</span>
-                                <div class="inline-block px-md py-xs rounded-sm text-[12px] font-bold tracking-widest border"
+                                <div class="inline-block px-md py-xs rounded-sm text-[13px] font-bold tracking-widest border"
                                     id="metric-status">CRITICAL</div>
                             </div>
                             <div class="mb-lg">
-                                <span class="font-label-caps text-[10px] text-on-surface-variant block mb-xs">RISK
+                                <span class="font-label-caps text-xs text-on-surface-variant block mb-xs">RISK
                                     DESCRIPTION</span>
-                                <p class="font-body-md text-on-surface-variant leading-relaxed" id="metric-desc">
+                                <p class="text-body-md text-on-surface-variant leading-relaxed font-semibold text-[15px]" id="metric-desc">
                                     Primary execution stream has exceeded the safe complexity threshold. Rule friction
                                     is causing significant cognitive overhead for the processor.
                                 </p>
                             </div>
                             <div class="mb-lg">
-                                <span class="font-label-caps text-[10px] text-on-surface-variant block mb-md">IDENTIFIED
+                                <span class="font-label-caps text-xs text-on-surface-variant block mb-md">IDENTIFIED
                                     TRIGGERS</span>
                                 <div class="flex flex-wrap gap-sm" id="metric-triggers">
                                     <!-- Dynamic Tech Tags -->
@@ -414,7 +429,7 @@
                             </div>
                             <div class="pt-lg border-t border-outline-variant/30 mt-auto">
                                 <button
-                                    class="w-full py-md border border-primary/40 text-primary font-label-caps text-[11px] hover:bg-primary/10 transition-colors flex items-center justify-center gap-sm"
+                                    class="w-full py-md border border-primary/40 text-primary font-label-caps text-[12px] hover:bg-primary/10 transition-colors flex items-center justify-center gap-sm"
                                     onclick="resetDetails()">
                                     <span class="material-symbols-outlined text-[14px]">arrow_back</span> RETURN TO OVERVIEW
                                 </button>
@@ -496,8 +511,9 @@
                 rowEl.className = 'group flex items-center gap-base h-12';
                 rowEl.style.animationDelay = `${(rowIndex + 1) * 0.05}s`;
 
+                // 2x wider (w-96) step label and larger font size (text-[12px])
                 const labelEl = document.createElement('div');
-                labelEl.className = 'w-48 shrink-0 font-data-mono text-[10px] text-on-surface-variant truncate pr-md';
+                labelEl.className = 'w-96 shrink-0 font-data-mono text-[12px] text-on-surface-variant truncate pr-md';
                 labelEl.title = row.section;
                 labelEl.textContent = row.section;
                 rowEl.appendChild(labelEl);
@@ -514,7 +530,7 @@
                     rowEl.appendChild(progressBg);
 
                     const passLabel = document.createElement('span');
-                    passLabel.className = 'font-label-caps text-[10px] text-primary px-sm';
+                    passLabel.className = 'font-label-caps text-xs text-primary px-sm';
                     passLabel.textContent = 'CLEAN PASS';
                     rowEl.appendChild(passLabel);
                 } else {
@@ -572,14 +588,14 @@
                 else dot.classList.add('bg-[#00FF88]');
 
                 const nameText = document.createElement('span');
-                nameText.className = 'font-data-mono text-[11px] text-on-surface-variant group-hover:text-primary transition-colors truncate';
+                nameText.className = 'font-data-mono text-[13px] text-on-surface-variant group-hover:text-primary transition-colors truncate';
                 nameText.textContent = run.skill_name;
 
                 leftDiv.appendChild(dot);
                 leftDiv.appendChild(nameText);
 
                 const rightTime = document.createElement('span');
-                rightTime.className = 'font-data-mono text-[10px] text-on-surface-variant/60 shrink-0 pl-sm';
+                rightTime.className = 'font-data-mono text-[11px] text-on-surface-variant/60 shrink-0 pl-sm';
                 rightTime.textContent = run.created_at;
 
                 btn.appendChild(leftDiv);
@@ -617,11 +633,9 @@
             renderHeatmap(run.heatmap_data);
 
             // Preprocess narrative MD to convert scores to badges
-            // Pattern: \*\*([^*]+)\s+\((?:Score\s+)?(CRITICAL|HIGH|MODERATE|LOW)\):\*\*
-            // Or pattern matching simple brackets: \*\*([^*]+)\s+\((CRITICAL|HIGH|MODERATE|LOW)\):\*\*
             const mdWithBadges = run.narrative_md.replace(/\*\*([^*]+)\s+\((?:Score\s+)?(CRITICAL|HIGH|MODERATE|LOW)\):\*\*/gi, (match, name, level) => {
                 const upperLevel = level.toUpperCase();
-                return `<div class="flex justify-between items-center mb-1"><span class="font-label-caps text-[10px] text-primary">${name}</span><span class="font-label-caps text-[10px] score-badge-${upperLevel} px-2 py-[2px] border rounded">${upperLevel}</span></div>`;
+                return `<div class="flex justify-between items-center mb-2"><span class="font-label-caps text-[12px] text-primary">${name}</span><span class="font-label-caps text-[11px] score-badge-${upperLevel} px-2 py-[2px] border rounded">${upperLevel}</span></div>`;
             });
 
             // Update narrative content
@@ -640,7 +654,7 @@
 
             const statusEl = document.getElementById('metric-status');
             statusEl.textContent = score;
-            statusEl.className = 'inline-block px-md py-xs rounded-sm text-[12px] font-bold tracking-widest border';
+            statusEl.className = 'inline-block px-md py-xs rounded-sm text-[13px] font-bold tracking-widest border';
 
             if (score === 'CRITICAL') {
                 statusEl.classList.add('bg-error/20', 'text-error', 'border-error/50');
@@ -658,7 +672,7 @@
             triggerContainer.innerHTML = '';
             triggers.forEach(t => {
                 const tag = document.createElement('span');
-                tag.className = 'px-sm py-[2px] bg-surface-container-highest border border-outline-variant text-on-surface-variant font-data-mono text-[10px] rounded-xs';
+                tag.className = 'px-sm py-[2px] bg-surface-container-highest border border-outline-variant text-on-surface-variant font-data-mono text-[11px] rounded-xs';
                 tag.textContent = t;
                 triggerContainer.appendChild(tag);
             });
