@@ -209,6 +209,28 @@
             background-color: rgba(0, 255, 136, 0.1);
             border-color: rgba(0, 255, 136, 0.3);
         }
+
+        /* Diagonal Data Cascade Animation */
+        @keyframes cascade-enter {
+            0% {
+                opacity: 0;
+                transform: scale(0.3) translateY(10px);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.1) translateY(-2px);
+                box-shadow: 0 0 15px currentColor; /* Uses the text color of the cell to glow */
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .animate-cascade-cell {
+            opacity: 0; /* Hide initially */
+            animation: cascade-enter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
     </style>
     <script id="tailwind-config">
         tailwind.config = {
@@ -448,6 +470,39 @@
     <script>
         let activeRunIndex = 0;
 
+        function scrambleText(element, targetText, duration = 400) {
+            const chars = '01X_$/\\#%&+-*[]{}';
+            const start = performance.now();
+            
+            function update(time) {
+                const elapsed = time - start;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                let result = '';
+                for (let i = 0; i < targetText.length; i++) {
+                    // Space characters don't get scrambled to preserve word layout
+                    if (targetText[i] === ' ') {
+                        result += ' ';
+                        continue;
+                    }
+                    
+                    if (Math.random() < progress) {
+                        result += targetText[i]; // Resolve to real character
+                    } else {
+                        result += chars[Math.floor(Math.random() * chars.length)]; // Scramble
+                    }
+                }
+                
+                element.textContent = result;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+
         function updateVulnerabilityBadge(score) {
             const pulseEl = document.getElementById('vulnerability-pulse');
             const ratingEl = document.getElementById('vulnerability-rating');
@@ -537,10 +592,13 @@
                     const gridEl = document.createElement('div');
                     gridEl.className = 'flex-1 grid grid-cols-12 gap-base h-full';
 
-                    row.metrics.forEach((metric) => {
+                    row.metrics.forEach((metric, colIndex) => {
                         const cell = document.createElement('div');
                         const scoreLower = metric.score.toLowerCase();
-                        cell.className = `cell-${scoreLower} cell-hover cursor-pointer`;
+                        cell.className = `cell-${scoreLower} cell-hover cursor-pointer animate-cascade-cell`;
+                        
+                        const delay = (rowIndex + colIndex) * 0.03;
+                        cell.style.animationDelay = `${delay}s`;
                         
                         const escapedCategory = metric.category.replace(/_/g, ' ').replace(/'/g, "\\'");
                         const escapedScore = metric.score.replace(/'/g, "\\'");
@@ -617,7 +675,10 @@
             }
 
             // Update title
-            document.getElementById('run-title').textContent = run.skill_name;
+            const titleEl = document.getElementById('run-title');
+            if (titleEl) {
+                scrambleText(titleEl, run.skill_name, 350);
+            }
             document.getElementById('run-subtitle').textContent = `Cognitive complexity mapping. Analysis generated at: ${run.created_at}`;
 
             // Update vulnerability badge
@@ -644,7 +705,12 @@
             activePanel.classList.remove('hidden');
             activePanel.classList.add('flex');
 
-            document.getElementById('metric-title').textContent = category;
+            const titleEl = document.getElementById('metric-title');
+            if (titleEl) {
+                if (titleEl.textContent.trim() !== category.trim()) {
+                    scrambleText(titleEl, category, 250);
+                }
+            }
 
             const statusEl = document.getElementById('metric-status');
             statusEl.textContent = score;
@@ -660,7 +726,12 @@
                 statusEl.classList.add('bg-[rgba(0,255,136,0.15)]', 'text-[#00FF88]', 'border-[#00FF8888]');
             }
 
-            document.getElementById('metric-desc').textContent = description;
+            const descEl = document.getElementById('metric-desc');
+            if (descEl) {
+                if (descEl.textContent.trim() !== description.trim()) {
+                    scrambleText(descEl, description, 300);
+                }
+            }
 
             const triggerContainer = document.getElementById('metric-triggers');
             triggerContainer.innerHTML = '';
